@@ -13,48 +13,48 @@ $user = [
 ];
 
 $menu = [
-    ['icon' => 'home', 'label' => 'Beranda', 'active' => true],
-    ['icon' => 'map-pin', 'label' => 'Destinasi'],
-    ['icon' => 'ticket', 'label' => 'Tiket Saya'],
-    ['icon' => 'building', 'label' => 'Homestay Saya'],
-    ['icon' => 'map', 'label' => 'Peta & Rute'],
-    ['icon' => 'heart', 'label' => 'Favorit'],
-    ['icon' => 'user', 'label' => 'Profil Saya'],
-    ['icon' => 'settings', 'label' => 'Pengaturan'],
+    ['icon' => 'home', 'label' => 'Beranda', 'active' => true, 'link' => 'dashboard_user.php'],
+    ['icon' => 'map-pin', 'label' => 'Destinasi', 'link' => 'informasi_destinasi.php'],
+    ['icon' => 'ticket', 'label' => 'Tiket Saya', 'link' => 'riwayat_pesanan.php'],
+    ['icon' => 'building', 'label' => 'Homestay Saya', 'link' => 'homestay_madiun.php'],
+    ['icon' => 'map', 'label' => 'Peta & Rute', 'link' => 'peta_rute.php'],
+    ['icon' => 'heart', 'label' => 'Favorit', 'link' => '#'], // Ganti jika ada file favorit
+    ['icon' => 'user', 'label' => 'Profil Saya', 'link' => '#'], 
+    ['icon' => 'settings', 'label' => 'Pengaturan', 'link' => '#'],
 ];
 
 $layanan = [
     [
         'icon' => 'map-pin',
-        'warna' => '#1d4ed8', // Biru
+        'warna' => '#1d4ed8',
         'judul' => 'Destinasi Wisata',
         'desc'  => 'Temukan tempat wisata terbaik di Madiun',
         'aksi'  => 'Jelajahi',
-        'link'  => '#',
+        'link'  => 'informasi_destinasi.php', // Arahkan ke file destinasi
     ],
     [
         'icon' => 'tag',
-        'warna' => '#ea580c', // Oranye
+        'warna' => '#ea580c',
         'judul' => 'Beli Tiket',
         'desc'  => 'Pesan tiket wisata dengan mudah',
         'aksi'  => 'Pesan Sekarang',
-        'link'  => '#',
+        'link'  => 'beli_tiket.php', // Arahkan ke file beli tiket
     ],
     [
         'icon' => 'home',
-        'warna' => '#7c3aed', // Ungu
+        'warna' => '#7c3aed',
         'judul' => 'Booking Homestay',
         'desc'  => 'Temukan penginapan nyaman & terbaik',
         'aksi'  => 'Cari Homestay',
-        'link'  => '#',
+        'link'  => 'homestay_madiun.php', // Arahkan ke file homestay
     ],
     [
         'icon' => 'book-open',
-        'warna' => '#16a34a', // Hijau
+        'warna' => '#16a34a',
         'judul' => 'Peta & Rute',
         'desc'  => 'Lihat peta wisata dan rencanakan rute',
         'aksi'  => 'Lihat Peta',
-        'link'  => '#',
+        'link'  => 'peta_rute.php', // Arahkan ke file peta
     ],
 ];
 

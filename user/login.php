@@ -10,7 +10,7 @@ if (isset($_SESSION['role'])) {
     if (strtolower($_SESSION['role']) === 'admin') {
         header('Location: dashboard_admin.php'); exit;
     } else {
-        header('Location: landingpage.php'); exit;
+        header('Location: dashboard_user.php'); exit;
     }
 }
 ?>

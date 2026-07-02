@@ -1,3 +1,16 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Halaman ini hanya boleh diakses oleh member yang sudah login
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['nama'])) {
+    header('Location: login.php');
+    exit;
+}
+
+$namaMember = $_SESSION['nama'];
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -67,7 +80,7 @@
       <div class="flex items-center gap-2 cursor-pointer">
         <img src="https://i.pravatar.cc/80?img=47" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" alt="avatar">
         <div>
-          <div class="font-bold text-[12.5px] leading-tight">Rara Putri</div>
+          <div class="font-bold text-[12.5px] leading-tight"><?= htmlspecialchars($namaMember) ?></div>
           <div class="text-[10.5px] text-mutedc">Member</div>
         </div>
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8b93a7" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
@@ -190,7 +203,8 @@
         </div>
 
         <label class="block text-[12.5px] font-semibold mb-1.5">Nama Pengunjung</label>
-        <input type="text" id="visitorName" placeholder="Sesuai KTP" class="w-full border border-bordc rounded-xl px-4 py-3 text-[13px] outline-none mb-4 focus:border-bluec placeholder:text-mutedc">
+        <input type="text" id="visitorName" value="<?= htmlspecialchars($namaMember) ?>" placeholder="Sesuai KTP" class="w-full border border-bordc rounded-xl px-4 py-3 text-[13px] outline-none mb-4 focus:border-bluec placeholder:text-mutedc">
+        <div class="text-[10.5px] text-mutedc -mt-3 mb-4">Otomatis terisi dari akun Anda. Bisa diubah bila membeli untuk orang lain.</div>
 
         <label class="block text-[12.5px] font-semibold mb-1.5">Metode Pembayaran</label>
         <select id="payMethod" class="w-full border border-bordc rounded-xl px-3 py-3 text-[13px] outline-none text-mutedc focus:border-bluec appearance-none bg-white mb-1">
@@ -358,11 +372,9 @@
   updateSummary();
 
   // BAYAR SEKARANG
-  // Validates: at least 1 destination selected, name filled in, payment method chosen.
-  // If everything is valid, this is the point where you'd normally POST the cart
-  // to your backend (e.g. fetch('/api/checkout', {method:'POST', body: JSON.stringify(payload)}))
-  // instead of the alert() placeholder below.
-  document.getElementById('btnBayar').addEventListener('click', ()=>{
+  // Validasi: minimal 1 destinasi dipilih, nama diisi, metode pembayaran dipilih.
+  // Jika valid, data dikirim ke proses_beli_tiket.php lalu redirect ke halaman konfirmasi.
+  document.getElementById('btnBayar').addEventListener('click', function() {
     const nameInput = document.getElementById('visitorName');
     const payMethod = document.getElementById('payMethod');
     const ids = Object.keys(cart);
@@ -377,37 +389,52 @@
     payMethod.classList.remove('border-red-400');
 
     if(errors.length > 0){
-      if(ids.length === 0) { /* nothing to highlight on the grid itself */ }
       if(!nameInput.value.trim()) nameInput.classList.add('border-red-400');
       if(!payMethod.value) payMethod.classList.add('border-red-400');
       alert("Mohon lengkapi dulu:\n\n- " + errors.join("\n- "));
       return;
     }
 
-    const orderId = "MTX" + Date.now();
-    const payload = {
-      order_id: orderId,
-      nama: nameInput.value.trim(),
-      metode: payMethod.value,
-      items: ids.map(id=>{
-        const d = destinations.find(x=>x.id == id);
-        return { destinasi: d.name, harga: d.price, jumlah: cart[id], subtotal: d.price * cart[id] };
-      }),
-      total: ids.reduce((sum,id)=>{
-        const d = destinations.find(x=>x.id == id);
-        return sum + d.price * cart[id];
-      }, 0),
-      created_at: new Date().toISOString(),
-      status: "menunggu_pembayaran"
-    };
+    // 1. Siapkan data destinasi yang dibeli
+    const payloadItems = ids.map(id => {
+      const d = destinations.find(x => x.id == id);
+      return { destinasi: d.name, harga: d.price, jumlah: cart[id] };
+    });
 
-    // Simpan data pesanan sementara di sessionStorage, lalu arahkan ke halaman
-    // pembayaran. Di aplikasi nyata (PHP), ini diganti dengan:
-    //   1. POST payload ke /api/checkout.php (INSERT ke tabel tiket_pembelian)
-    //   2. Backend balikin order_id
-    //   3. redirect ke menunggu-pembayaran.php?order_id=<id dari server>
-    sessionStorage.setItem('madiuntrack_order', JSON.stringify(payload));
-    window.location.href = "konfirmasi_pembayaran.php?order_id=" + orderId;
+    // 2. Masukkan ke dalam FormData agar ditangkap sebagai $_POST di PHP
+    const formData = new FormData();
+    formData.append('nama', nameInput.value.trim());
+    formData.append('metode', payMethod.value);
+    formData.append('items', JSON.stringify(payloadItems));
+
+    // 3. Ubah tampilan tombol menjadi loading agar tidak diklik 2 kali
+    const btn = document.getElementById('btnBayar');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = 'Memproses...';
+
+    // 4. Kirim data ke backend proses_beli_tiket.php menggunakan fetch
+    fetch('../proses/proses_beli_tiket.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if(data.order_id) {
+        // Jika sukses divalidasi PHP, redirect dengan order_id dari database
+        window.location.href = "konfirmasi_pembayaran.php?order_id=" + data.order_id;
+      } else {
+        alert("Gagal: " + (data.error || "Terjadi kesalahan saat memproses pesanan."));
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert("Terjadi kesalahan jaringan atau respons server tidak valid.");
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    });
   });
 </script>
 

@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (strtolower($user['role']) === 'admin') {
                 header('Location: dashboard_admin.php');
             } else {
-                header('Location: landingpage.php');
+                header('Location: dashboard_user.php');
             }
             exit;
         } else {
