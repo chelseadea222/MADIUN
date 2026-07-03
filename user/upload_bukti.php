@@ -2,7 +2,7 @@
 // upload_bukti.php
 // Menerima submit form dari konfirmasi_pembayaran.php: file bukti transfer + order_id.
 // Tugasnya: validasi file, simpan ke folder uploads/bukti/, lalu UPDATE
-// baris di pemesanan_tiket (bukti_transfer + status jadi 'Diproses').
+// baris di pemesanan_tiket (bukti_pembayaran + status jadi 'Diproses').
 
 require_once '../config/koneksi.php';
 
@@ -24,39 +24,43 @@ if ($file['size'] > 5 * 1024 * 1024) {
 }
 
 // Pastikan order_id-nya memang ada dan belum pernah upload bukti sebelumnya
-$stmt = mysqli_prepare($koneksi, "SELECT id_transaksi, bukti_transfer FROM pemesanan_tiket WHERE id_transaksi = ?");
+$stmt = mysqli_prepare($koneksi, "SELECT id_transaksi, bukti_pembayaran FROM pemesanan_tiket WHERE id_transaksi = ?");
 mysqli_stmt_bind_param($stmt, 's', $order_id);
 mysqli_stmt_execute($stmt);
 $order = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
 if (!$order) {
-    die('Pesanan tidak ditemukan.');
+    die('Pesanan tidak ditemukan. <a href="beli_tiket.php">Kembali</a>');
 }
-if ($order['bukti_transfer']) {
+
+if ($order['bukti_pembayaran']) {
     header('Location: riwayat_pesanan.php');
     exit;
 }
 
-// Simpan file ke folder uploads/bukti/ dengan nama unik berbasis order_id
+// --- SIMPAN FILE KE FOLDER uploads/bukti/ ---
+// Sesuaikan path ini dengan struktur folder project Anda.
+// Asumsi: file ini ada di folder yang sejajar dengan folder "uploads" di root project.
+$uploadDir = '../uploads/bukti/';
+if (!is_dir($uploadDir)) {
+    mkdir($uploadDir, 0755, true);
+}
+
 $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 $filename = $order_id . '_' . time() . '.' . $ext;
-$targetDir = __DIR__ . '/uploads/bukti/';
-$targetPath = $targetDir . $filename;
-
-if (!is_dir($targetDir)) {
-    mkdir($targetDir, 0755, true);
-}
+$targetPath = $uploadDir . $filename;
 
 if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
-    die('Gagal menyimpan file ke server.');
+    die('Gagal menyimpan file di server. <a href="konfirmasi_pembayaran.php?order_id=' . urlencode($order_id) . '">Coba lagi</a>');
 }
 
-// Path relatif yang disimpan di database (untuk ditampilkan lagi nanti kalau perlu)
+// Path relatif yang disimpan ke DB, dipakai juga untuk <img src="..."> di halaman lain
 $relativePath = 'uploads/bukti/' . $filename;
 
+// --- UPDATE STATUS PESANAN ---
 $update = mysqli_prepare(
     $koneksi,
-    "UPDATE pemesanan_tiket SET bukti_transfer = ?, status = 'Diproses' WHERE id_transaksi = ?"
+    "UPDATE pemesanan_tiket SET bukti_pembayaran = ?, status = 'Diproses' WHERE id_transaksi = ?"
 );
 mysqli_stmt_bind_param($update, 'ss', $relativePath, $order_id);
 mysqli_stmt_execute($update);

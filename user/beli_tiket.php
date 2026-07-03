@@ -17,225 +17,225 @@ $namaMember = $_SESSION['nama'];
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Madiun Track - Destinasi Wisata</title>
-<script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
 <script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
-        colors: {
-          orange: { DEFAULT: '#f7941d', light: '#fff1e0' },
-          bluec:  { DEFAULT: '#3b6fe0', light: '#eef1fd' },
-          navy:   '#0f1f45',
-          mutedc: '#8b93a7',
-          bordc:  '#eaecf2',
-        }
-      }
-    }
-  }
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        bgc: '#f3f4f8',
+        textc: '#1e2433',
+        orange: '#f7941d',
+        orangeLight: '#fff1e0',
+        blue: '#3b6fe0',
+        blueLight: '#eef1fd',
+        navy: '#0f1f45',
+        muted: '#8b93a7',
+        borderc: '#eaecf2',
+        purpleLight: '#f3e8ff',
+        purple: '#9333ea',
+      },
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
+    },
+  },
+};
 </script>
 <style>
-  body{ font-family:'Plus Jakarta Sans', sans-serif; }
-  /* NOTE: no overlay / fixed backdrop elements are used anywhere in this file,
-     which is what usually causes the "black screen" bug (an empty bg-black
-     modal layer with no content and a high z-index). Selection state is
-     handled purely by toggling classes on the card itself. */
+  /* Scrollbar tipis untuk daftar ringkasan pembayaran */
+  .summary-list::-webkit-scrollbar { width: 4px; }
+  .summary-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
 </style>
 </head>
-<body class="bg-[#f3f4f8] text-[#1e2433] text-sm">
+<body class="bg-bgc text-textc font-sans text-sm">
 
 <div class="max-w-[1400px] mx-auto p-5">
 
-  <!-- HEADER -->
-  <div class="flex items-center justify-between mb-5 flex-wrap gap-4">
+  <div class="flex items-center justify-between flex-wrap gap-4 mb-5">
     <div class="flex items-center gap-3">
-      <button class="w-9 h-9 rounded-full bg-white border border-bordc flex items-center justify-center shadow-sm">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#1e2433" stroke-width="2" class="w-4 h-4"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      </button>
+      <a href="landing_user.php" class="w-9 h-9 rounded-full bg-white border border-borderc flex items-center justify-center shadow-sm hover:bg-slate-50 transition-colors" title="Kembali ke Beranda">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1e2433" stroke-width="2" width="16" height="16"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </a>
       <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg bg-orange flex items-center justify-center text-white">
-          <svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M12 2C7.6 2 4 5.6 4 10c0 5.4 7 11.5 7.3 11.8.2.1.4.2.7.2s.5-.1.7-.2C13 21.5 20 15.4 20 10c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>
+        <div class="w-8 h-8 rounded-lg bg-orange text-white flex items-center justify-center shrink-0">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2C7.6 2 4 5.6 4 10c0 5.4 7 11.5 7.3 11.8.2.1.4.2.7.2s.5-.1.7-.2C13 21.5 20 15.4 20 10c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>
         </div>
         <div>
           <div class="font-extrabold text-base leading-tight">Madiun<span class="text-orange">Track</span></div>
-          <div class="text-[10px] text-mutedc tracking-wide font-semibold -mt-0.5">TICKETING DASHBOARD</div>
+          <div class="text-[10px] text-muted font-semibold tracking-wide">TICKETING DASHBOARD</div>
         </div>
       </div>
     </div>
 
     <div class="flex items-center gap-3">
-      <div class="flex items-center gap-2 bg-white border border-bordc rounded-xl px-3.5 py-2 shadow-sm cursor-pointer">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#3b6fe0" stroke-width="2" class="w-4 h-4"><path d="M3 8.5c0-1 .5-1.7 1.3-2.2M21 8.5c0-1-.5-1.7-1.3-2.2M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><circle cx="12" cy="8" r="4"/></svg>
+      <div class="bg-white border border-borderc rounded-xl px-3.5 py-2 shadow-sm cursor-pointer flex items-center gap-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#3b6fe0" stroke-width="2" width="16" height="16"><path d="M3 8.5c0-1 .5-1.7 1.3-2.2M21 8.5c0-1-.5-1.7-1.3-2.2M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><circle cx="12" cy="8" r="4"/></svg>
         <div>
-          <div class="font-bold text-[12px] leading-tight">Butuh bantuan?</div>
-          <div class="text-[10.5px] text-mutedc">Hubungi kami</div>
+          <div class="font-bold text-xs leading-tight">Butuh bantuan?</div>
+          <div class="text-[10.5px] text-muted">Hubungi kami</div>
         </div>
       </div>
-      <div class="relative w-10 h-10 rounded-full bg-white border border-bordc flex items-center justify-center shadow-sm cursor-pointer">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#5b6274" stroke-width="2" class="w-4 h-4"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
+
+      <div class="relative w-10 h-10 rounded-full bg-white border border-borderc flex items-center justify-center shadow-sm cursor-pointer shrink-0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#5b6274" stroke-width="2" width="16" height="16"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
         <div class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold w-[18px] h-[18px] rounded-full flex items-center justify-center border-2 border-white">3</div>
       </div>
+
       <div class="flex items-center gap-2 cursor-pointer">
         <img src="https://i.pravatar.cc/80?img=47" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" alt="avatar">
         <div>
           <div class="font-bold text-[12.5px] leading-tight"><?= htmlspecialchars($namaMember) ?></div>
-          <div class="text-[10.5px] text-mutedc">Member</div>
+          <div class="text-[10.5px] text-muted">Member</div>
         </div>
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8b93a7" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
       </div>
     </div>
   </div>
 
-  <!-- BODY -->
-  <div class="grid grid-cols-[1fr_340px] max-[1100px]:grid-cols-1 gap-5">
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5">
 
-    <!-- LEFT -->
-    <div class="bg-white border border-bordc rounded-3xl p-6 relative overflow-hidden">
-      <div class="flex items-center justify-between mb-1 relative z-10">
-        <div class="font-extrabold text-lg flex items-center gap-1.5">Destinasi Wisata <span class="text-orange">✨</span></div>
-        <div class="flex items-center gap-1.5 text-orange font-bold text-[12.5px] bg-orange-light px-3 py-1.5 rounded-full">
-          <svg viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path d="M12 2l2.5 6H21l-5 4 2 7-6-4-6 4 2-7-5-4h6.5z"/></svg>
+    <div class="bg-white border border-borderc rounded-3xl p-6 relative overflow-hidden">
+      <div class="flex items-center justify-between font-extrabold text-lg mb-1 relative z-10">
+        <div class="flex items-center gap-1">Destinasi Wisata <span>✨</span></div>
+        <div class="text-orange bg-orangeLight font-bold text-[12.5px] px-3 py-1.5 rounded-full flex items-center gap-1.5">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2l2.5 6H21l-5 4 2 7-6-4-6 4 2-7-5-4h6.5z"/></svg>
           <span id="selectedCount">0</span> Terpilih
         </div>
       </div>
-      <p class="text-mutedc text-[13px] mb-5 relative z-10">Pilih destinasi favoritmu dan nikmati pengalaman terbaik di Madiun!</p>
+      <p class="text-muted text-[13px] mb-5 relative z-10">Pilih destinasi favoritmu dan nikmati pengalaman terbaik di Madiun!</p>
 
-      <!-- decorative skyline top-right, purely visual, no click handling -->
       <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=600&q=60" class="absolute top-0 right-0 w-[380px] h-[110px] object-cover opacity-30 rounded-bl-3xl pointer-events-none select-none" alt="">
 
-      <!-- DESTINATION LIST -->
-      <div class="grid grid-cols-3 max-[900px]:grid-cols-2 gap-3 relative z-10" id="destGrid"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 relative z-10" id="destGrid"></div>
 
-      <!-- INFO BANNER -->
-      <div class="flex items-center justify-between bg-[#eef1fd] rounded-2xl p-4 mt-5 flex-wrap gap-4">
-        <div class="flex items-start gap-3 max-w-xs">
+      <div class="bg-blueLight rounded-2xl p-4 mt-5 flex items-center justify-between flex-wrap gap-4">
+        <div class="flex gap-3 items-start max-w-[320px]">
           <div class="w-9 h-9 rounded-full bg-white flex items-center justify-center shrink-0">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#3b6fe0" stroke-width="2" class="w-4 h-4"><rect x="3" y="6" width="18" height="12" rx="2"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3b6fe0" stroke-width="2" width="16" height="16"><rect x="3" y="6" width="18" height="12" rx="2"/></svg>
           </div>
           <div>
             <div class="font-bold text-[12.5px] mb-0.5">Informasi Tiket</div>
-            <div class="text-[11.5px] text-mutedc leading-relaxed">Tiket berlaku untuk 1 orang dan hanya dapat digunakan pada tanggal kunjungan yang dipilih.</div>
+            <div class="text-[11.5px] text-muted leading-relaxed">Tiket berlaku untuk 1 orang dan hanya dapat digunakan pada tanggal kunjungan yang dipilih.</div>
           </div>
         </div>
+
         <div class="flex items-center gap-5 flex-wrap">
           <div class="flex items-center gap-2">
             <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" class="w-4 h-4"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" width="16" height="16"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
             </div>
             <div>
               <div class="font-bold text-[11.5px]">Tiket Resmi</div>
-              <div class="text-[10.5px] text-mutedc">Terjamin</div>
+              <div class="text-[10.5px] text-muted">Terjamin</div>
             </div>
           </div>
           <div class="flex items-center gap-2">
             <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#3b6fe0" stroke-width="2" class="w-4 h-4"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#3b6fe0" stroke-width="2" width="16" height="16"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>
             </div>
             <div>
               <div class="font-bold text-[11.5px]">Mudah &amp; Cepat</div>
-              <div class="text-[10.5px] text-mutedc">Pembelian</div>
+              <div class="text-[10.5px] text-muted">Pembelian</div>
             </div>
           </div>
           <div class="flex items-center gap-2">
             <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" class="w-4 h-4"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" width="16" height="16"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/></svg>
             </div>
             <div>
               <div class="font-bold text-[11.5px]">Aman</div>
-              <div class="text-[10.5px] text-mutedc">Transaksi 100%</div>
+              <div class="text-[10.5px] text-muted">Transaksi 100%</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- FOOTER FEATURES -->
-      <div class="grid grid-cols-4 max-[700px]:grid-cols-2 gap-4 mt-5 pt-5 border-t border-bordc">
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-orange-light text-orange flex items-center justify-center shrink-0">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-5 pt-5 border-t border-borderc">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-orangeLight text-orange flex items-center justify-center shrink-0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
           </div>
           <div>
             <div class="font-bold text-[11.5px]">Harga Terbaik</div>
-            <div class="text-[10.5px] text-mutedc">Jaminan harga resmi</div>
+            <div class="text-[10.5px] text-muted">Jaminan harga resmi</div>
           </div>
         </div>
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4"><rect x="3" y="6" width="18" height="12" rx="2"/></svg>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-purpleLight text-purple flex items-center justify-center shrink-0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="6" width="18" height="12" rx="2"/></svg>
           </div>
           <div>
             <div class="font-bold text-[11.5px]">Tiket Instan</div>
-            <div class="text-[10.5px] text-mutedc">Langsung diterima</div>
+            <div class="text-[10.5px] text-muted">Langsung diterima</div>
           </div>
         </div>
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-orange-light text-orange flex items-center justify-center shrink-0">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-orangeLight text-orange flex items-center justify-center shrink-0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
           </div>
           <div>
             <div class="font-bold text-[11.5px]">Banyak Pilihan</div>
-            <div class="text-[10.5px] text-mutedc">Destinasi menarik</div>
+            <div class="text-[10.5px] text-muted">Destinasi menarik</div>
           </div>
         </div>
-        <div class="flex items-center gap-2.5">
-          <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4"><path d="M3 8.5c0-1 .5-1.7 1.3-2.2M21 8.5c0-1-.5-1.7-1.3-2.2M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><circle cx="12" cy="8" r="4"/></svg>
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg bg-purpleLight text-purple flex items-center justify-center shrink-0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M3 8.5c0-1 .5-1.7 1.3-2.2M21 8.5c0-1-.5-1.7-1.3-2.2M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><circle cx="12" cy="8" r="4"/></svg>
           </div>
           <div>
             <div class="font-bold text-[11.5px]">Customer Support</div>
-            <div class="text-[10.5px] text-mutedc">Siap membantu</div>
+            <div class="text-[10.5px] text-muted">Siap membantu</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- RIGHT SIDEBAR -->
     <div class="flex flex-col gap-5">
-      <!-- LENGKAPI DATA -->
-      <div class="bg-white border border-bordc rounded-3xl p-6">
-        <div class="flex items-center gap-2.5 font-extrabold text-[15px] mb-5">
-          <div class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
+
+      <div class="bg-white border border-borderc rounded-3xl p-6 relative overflow-hidden">
+        <div class="flex items-center gap-2 font-extrabold text-[15px] mb-5">
+          <div class="w-8 h-8 rounded-lg bg-purpleLight text-purple flex items-center justify-center shrink-0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
           </div>
           Lengkapi Data
         </div>
 
         <label class="block text-[12.5px] font-semibold mb-1.5">Nama Pengunjung</label>
-        <input type="text" id="visitorName" value="<?= htmlspecialchars($namaMember) ?>" placeholder="Sesuai KTP" class="w-full border border-bordc rounded-xl px-4 py-3 text-[13px] outline-none mb-4 focus:border-bluec placeholder:text-mutedc">
-        <div class="text-[10.5px] text-mutedc -mt-3 mb-4">Otomatis terisi dari akun Anda. Bisa diubah bila membeli untuk orang lain.</div>
+        <input type="text" id="visitorName" value="<?= htmlspecialchars($namaMember) ?>" placeholder="Sesuai KTP" class="w-full border border-borderc rounded-xl px-4 py-3 text-[13px] outline-none mb-1.5 bg-white transition-colors focus:border-blue">
+        <div class="text-[10.5px] text-muted mb-4">Otomatis terisi dari akun Anda. Bisa diubah bila membeli untuk orang lain.</div>
 
         <label class="block text-[12.5px] font-semibold mb-1.5">Metode Pembayaran</label>
-        <select id="payMethod" class="w-full border border-bordc rounded-xl px-3 py-3 text-[13px] outline-none text-mutedc focus:border-bluec appearance-none bg-white mb-1">
+        <select id="payMethod" class="w-full border border-borderc rounded-xl px-4 py-3 text-[13px] outline-none mb-1.5 bg-white transition-colors focus:border-blue">
           <option value="">Pilih metode...</option>
           <option value="qris">QRIS</option>
           <option value="bca">Transfer BCA</option>
           <option value="bni">Transfer BNI</option>
           <option value="mandiri">Transfer Mandiri</option>
         </select>
-        <div class="text-[11px] text-mutedc mb-4">Kamu bisa memilih lebih dari satu destinasi — atur jumlah tiket langsung di tiap kartu destinasi.</div>
+        <div class="text-[10.5px] text-muted">Kamu bisa memilih lebih dari satu destinasi — atur jumlah tiket langsung di tiap kartu destinasi.</div>
 
-        <div class="flex items-center gap-3 bg-bluec-light rounded-xl p-3.5 mt-5">
+        <div class="bg-blueLight rounded-xl p-3.5 mt-5 flex items-center gap-3">
           <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#3b6fe0" stroke-width="2" class="w-4 h-4"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3b6fe0" stroke-width="2" width="16" height="16"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/></svg>
           </div>
           <div>
-            <div class="font-bold text-[12px] text-[#1e2433]">Keamanan Terjamin</div>
-            <div class="text-[11px] text-mutedc leading-relaxed">Data dan transaksi Anda aman bersama kami.</div>
+            <div class="font-bold text-xs text-textc">Keamanan Terjamin</div>
+            <div class="text-[11px] text-muted leading-relaxed">Data dan transaksi Anda aman bersama kami.</div>
           </div>
         </div>
       </div>
 
-      <!-- RINCIAN PEMBAYARAN -->
       <div class="bg-navy text-white rounded-3xl p-6 relative overflow-hidden">
-        <div class="flex items-center gap-2.5 font-extrabold text-[15px] mb-5 relative z-10">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#f7941d" stroke-width="2" class="w-4 h-4"><rect x="3" y="6" width="18" height="12" rx="2"/></svg>
+        <div class="flex items-center gap-2 font-extrabold text-[15px] mb-5 relative z-10">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#f7941d" stroke-width="2" width="16" height="16"><rect x="3" y="6" width="18" height="12" rx="2"/></svg>
           Rincian Pembayaran
         </div>
 
         <div class="relative z-10">
-          <div id="sumItems" class="space-y-2.5 mb-4 max-h-[160px] overflow-y-auto pr-1"></div>
+          <div id="sumItems" class="summary-list max-h-40 overflow-y-auto mb-4 pr-1"></div>
           <div id="sumEmpty" class="text-[12.5px] text-white/50 mb-4">Belum ada destinasi dipilih.</div>
 
           <div class="flex items-center justify-between text-[13px] pb-4 mb-4 border-b border-dashed border-white/20">
@@ -243,16 +243,16 @@ $namaMember = $_SESSION['nama'];
             <span class="font-semibold">Rp 0</span>
           </div>
 
-          <div class="text-[12px] text-white/50 mb-1">Total Pembayaran</div>
+          <div class="text-xs text-white/50 mb-1">Total Pembayaran</div>
           <div class="text-[26px] font-extrabold text-orange mb-5" id="sumTotal">Rp 0</div>
         </div>
 
-        <button id="btnBayar" class="w-full flex items-center justify-center gap-2 bg-orange text-white font-bold py-3.5 rounded-xl text-[14px] relative z-10 hover:brightness-105 active:scale-[0.99] transition disabled:opacity-50 disabled:cursor-not-allowed">
+        <button id="btnBayar" class="w-full flex items-center justify-center gap-2 bg-orange text-white font-bold py-3.5 rounded-xl text-sm transition relative z-10 hover:brightness-105 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed">
           Bayar Sekarang
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="w-4 h-4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </button>
-        <div class="flex items-center justify-center gap-1.5 text-[11px] text-white/60 mt-3 relative z-10">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-3.5 h-3.5"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+        <div class="flex items-center justify-center gap-1 text-[11px] text-white/60 mt-3 relative z-10">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
           Pembayaran Anda dilindungi 100%
         </div>
       </div>
@@ -275,10 +275,7 @@ $namaMember = $_SESSION['nama'];
     { id:11, name:"Hutan Pinus NONGKO IJO", price:10000, img:"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=200&q=70" },
   ];
 
-  // Multi-select cart: { destinationId: quantity }. Users can pick as many
-  // destinations as they like, each with its own ticket quantity.
-  const cart = { 1: 1 }; // Pahlawan Street Center dipilih secara default, sesuai desain awal
-
+  const cart = { 1: 1 };
   const grid = document.getElementById('destGrid');
 
   function formatRp(n){
@@ -290,27 +287,28 @@ $namaMember = $_SESSION['nama'];
     destinations.forEach(d=>{
       const qty = cart[d.id] || 0;
       const isSelected = qty > 0;
+
       const card = document.createElement('div');
-      card.className = `flex items-center gap-2.5 border rounded-xl p-2.5 transition ${isSelected ? 'border-orange bg-orange-light/40' : 'border-bordc bg-white hover:border-mutedc'}`;
+      card.className = `flex items-center gap-2.5 border rounded-xl p-2.5 bg-white transition-all cursor-pointer hover:border-slate-400 ${isSelected ? 'border-orange bg-orangeLight/40' : 'border-borderc'}`;
+
       card.innerHTML = `
-        <img src="${d.img}" class="w-11 h-11 rounded-lg object-cover shrink-0 pointer-events-none" alt="${d.name}">
-        <div class="flex-1 min-w-0 cursor-pointer" data-role="select" data-id="${d.id}">
-          <div class="font-semibold text-[11.5px] leading-snug truncate">${d.name}</div>
+        <img src="${d.img}" class="w-11 h-11 rounded-lg object-cover pointer-events-none" alt="${d.name}">
+        <div class="flex-1 min-w-0" data-role="select" data-id="${d.id}">
+          <div class="font-semibold text-[11.5px] leading-tight whitespace-nowrap overflow-hidden text-ellipsis">${d.name}</div>
           <div class="text-orange font-bold text-[11.5px]">${formatRp(d.price)}</div>
         </div>
         ${isSelected
           ? `<div class="flex items-center gap-1.5 shrink-0">
-               <button data-action="dec" data-id="${d.id}" class="w-6 h-6 rounded-md bg-white border border-bordc flex items-center justify-center font-bold text-[11px] text-[#5b6274]">−</button>
+               <button data-action="dec" data-id="${d.id}" class="w-6 h-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-white border border-borderc text-slate-600">−</button>
                <span class="font-bold text-[11.5px] w-3 text-center">${qty}</span>
-               <button data-action="inc" data-id="${d.id}" class="w-6 h-6 rounded-md bg-orange text-white flex items-center justify-center font-bold text-[11px]">+</button>
+               <button data-action="inc" data-id="${d.id}" class="w-6 h-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-orange text-white">+</button>
              </div>`
-          : `<button data-action="inc" data-id="${d.id}" class="w-6 h-6 rounded-full border-2 border-bordc bg-white flex items-center justify-center shrink-0 font-bold text-[12px] text-mutedc">+</button>`
+          : `<button data-action="inc" data-id="${d.id}" class="w-6 h-6 rounded-full border-2 border-borderc bg-white text-muted flex items-center justify-center font-bold text-xs shrink-0">+</button>`
         }
       `;
       grid.appendChild(card);
     });
 
-    // Clicking the name/price area selects the destination (adds 1 ticket)
     grid.querySelectorAll('[data-role="select"]').forEach(el=>{
       el.addEventListener('click', ()=>{
         const id = parseInt(el.dataset.id);
@@ -320,7 +318,6 @@ $namaMember = $_SESSION['nama'];
       });
     });
 
-    // +/- buttons adjust quantity per destination without affecting others
     grid.querySelectorAll('button[data-action]').forEach(btn=>{
       btn.addEventListener('click', (e)=>{
         e.stopPropagation();
@@ -346,21 +343,22 @@ $namaMember = $_SESSION['nama'];
 
     if(ids.length === 0){
       itemsWrap.innerHTML = "";
-      emptyMsg.classList.remove('hidden');
+      emptyMsg.style.display = 'block';
       document.getElementById('sumTotal').textContent = formatRp(0);
       return;
     }
-    emptyMsg.classList.add('hidden');
 
+    emptyMsg.style.display = 'none';
     let total = 0;
+
     itemsWrap.innerHTML = ids.map(id=>{
       const d = destinations.find(x=>x.id == id);
       const qty = cart[id];
       const subtotal = d.price * qty;
       total += subtotal;
       return `
-        <div class="flex items-center justify-between text-[12.5px]">
-          <span class="text-white/70 truncate pr-2">${d.name} <span class="text-white/40">x${qty}</span></span>
+        <div class="flex items-center justify-between text-[12.5px] mb-2.5">
+          <span class="text-white/70 whitespace-nowrap overflow-hidden text-ellipsis pr-2">${d.name} <span class="text-white/40">x${qty}</span></span>
           <span class="font-semibold shrink-0">${formatRp(subtotal)}</span>
         </div>`;
     }).join("");
@@ -372,8 +370,6 @@ $namaMember = $_SESSION['nama'];
   updateSummary();
 
   // BAYAR SEKARANG
-  // Validasi: minimal 1 destinasi dipilih, nama diisi, metode pembayaran dipilih.
-  // Jika valid, data dikirim ke proses_beli_tiket.php lalu redirect ke halaman konfirmasi.
   document.getElementById('btnBayar').addEventListener('click', function() {
     const nameInput = document.getElementById('visitorName');
     const payMethod = document.getElementById('payMethod');
@@ -384,36 +380,31 @@ $namaMember = $_SESSION['nama'];
     if(!nameInput.value.trim()) errors.push("Nama pengunjung wajib diisi.");
     if(!payMethod.value) errors.push("Pilih metode pembayaran.");
 
-    // reset previous error styling
-    nameInput.classList.remove('border-red-400');
-    payMethod.classList.remove('border-red-400');
+    nameInput.classList.remove('border-red-500');
+    payMethod.classList.remove('border-red-500');
 
     if(errors.length > 0){
-      if(!nameInput.value.trim()) nameInput.classList.add('border-red-400');
-      if(!payMethod.value) payMethod.classList.add('border-red-400');
+      if(!nameInput.value.trim()) nameInput.classList.add('border-red-500');
+      if(!payMethod.value) payMethod.classList.add('border-red-500');
       alert("Mohon lengkapi dulu:\n\n- " + errors.join("\n- "));
       return;
     }
 
-    // 1. Siapkan data destinasi yang dibeli
     const payloadItems = ids.map(id => {
       const d = destinations.find(x => x.id == id);
       return { destinasi: d.name, harga: d.price, jumlah: cart[id] };
     });
 
-    // 2. Masukkan ke dalam FormData agar ditangkap sebagai $_POST di PHP
     const formData = new FormData();
     formData.append('nama', nameInput.value.trim());
     formData.append('metode', payMethod.value);
     formData.append('items', JSON.stringify(payloadItems));
 
-    // 3. Ubah tampilan tombol menjadi loading agar tidak diklik 2 kali
     const btn = document.getElementById('btnBayar');
     const originalText = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = 'Memproses...';
 
-    // 4. Kirim data ke backend proses_beli_tiket.php menggunakan fetch
     fetch('../proses/proses_beli_tiket.php', {
       method: 'POST',
       body: formData
@@ -421,7 +412,6 @@ $namaMember = $_SESSION['nama'];
     .then(response => response.json())
     .then(data => {
       if(data.order_id) {
-        // Jika sukses divalidasi PHP, redirect dengan order_id dari database
         window.location.href = "konfirmasi_pembayaran.php?order_id=" + data.order_id;
       } else {
         alert("Gagal: " + (data.error || "Terjadi kesalahan saat memproses pesanan."));

@@ -27,7 +27,7 @@ if (!$order) {
 
 // Kalau pembayaran untuk order ini sudah pernah dikonfirmasi (bukti sudah ada),
 // langsung arahkan ke riwayat supaya tidak upload bukti dobel.
-if ($order['bukti_transfer']) {
+if ($order['bukti_pembayaran'] !== null) {
     header('Location: riwayat_pesanan.php');
     exit;
 }
@@ -71,6 +71,8 @@ $items = mysqli_fetch_all($detailResult, MYSQLI_ASSOC);
 <body class="bg-gradient-to-br from-[#eef0fb] via-[#f4f1fb] to-[#fdf1ec] min-h-screen text-[#1e2433] text-sm">
 
 <div class="max-w-[1560px] mx-auto p-6">
+
+
 
   <!-- TOP BAR -->
   <div class="flex items-center justify-between mb-6">

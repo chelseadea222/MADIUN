@@ -115,7 +115,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
       <button class="hidden md:block text-gray-300 hover:text-orange transition">
         <i class="fa-regular fa-heart text-lg"></i>
       </button>
-      <a href="#" class="bg-teal hover:bg-teal-d text-white text-sm font-bold px-5 py-2 rounded-lg transition whitespace-nowrap">
+      <a href="register.php" class="bg-teal hover:bg-teal-d text-white text-sm font-bold px-5 py-2 rounded-lg transition whitespace-nowrap">
         Masuk / Daftar
       </a>
       <button id="hbg" class="md:hidden text-gray-600 text-xl">
@@ -172,7 +172,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
     <!-- Grid diubah menjadi 5 kolom agar semuanya lurus dalam satu baris -->
     <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6">
     <!-- 1. Destinasi Wisata -->
-      <a href="#destinasi" class="flex items-start gap-4 group cursor-pointer">
+      <a href="detail_destinasi.php" class="flex items-start gap-4 group cursor-pointer">
         <div class="icon-blue w-[54px] h-[54px] rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
           <i class="fa-solid fa-map-marked-alt text-white text-xl"></i>
         </div>
@@ -184,7 +184,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
       </a>
 
       <!-- 2. Beli Tiket Wisata (BARU DITAMBAHKAN) -->
-      <a href="user/beli_tiket.php" class="flex items-start gap-4 group cursor-pointer">
+      <a href="#" class="flex items-start gap-4 group cursor-pointer">
         <div class="icon-orange w-[54px] h-[54px] rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
           <i class="fa-solid fa-ticket text-white text-xl"></i>
         </div>
@@ -208,7 +208,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
       </a>
  
       <!-- 4. Homestay -->
-      <a href="homestay_madiun.php" class="flex items-start gap-4 group cursor-pointer">
+      <a href="detail_booking.php" class="flex items-start gap-4 group cursor-pointer">
         <div class="icon-purple w-[54px] h-[54px] rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
           <i class="fa-solid fa-house text-white text-xl"></i>
         </div>
@@ -220,7 +220,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
       </a>
  
       <!-- 5. Peta Wisata -->
-      <a href="user/peta.php" class="flex items-start gap-4 group cursor-pointer">
+      <a href="#" class="flex items-start gap-4 group cursor-pointer">
         <div class="icon-green w-[54px] h-[54px] rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
           <i class="fa-solid fa-map text-white text-xl"></i>
         </div>
@@ -275,7 +275,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
             </p>
             <div class="flex gap-2">
               <a href="#" class="flex-1 text-center border border-gray-200 hover:border-teal hover:text-teal text-gray-500 text-xs font-semibold py-2 rounded-lg transition">Detail</a>
-              <a href="#" class="flex-1 text-center bg-orange hover:bg-orange-d text-white text-xs font-bold py-2 rounded-lg transition">Tiket</a>
+              <a href="beli_tiket.php" class="flex-1 text-center bg-orange hover:bg-orange-d text-white text-xs font-bold py-2 rounded-lg transition">Tiket</a>
             </div>
           </div>
         </div>
@@ -367,7 +367,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
         </div>
         <p class="text-xs text-gray-400 mt-0.5">Penginapan nyaman pilihan terbaik di Madiun</p>
       </div>
-      <a href="#" class="border border-gray-200 hover:border-teal text-gray-500 hover:text-teal text-xs font-semibold px-4 py-2 rounded-lg transition whitespace-nowrap">
+      <a href="detail_destinasi.php" class="border border-gray-200 hover:border-teal text-gray-500 hover:text-teal text-xs font-semibold px-4 py-2 rounded-lg transition whitespace-nowrap">
         Lihat Semua
       </a>
     </div>
@@ -406,7 +406,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
                 <!-- Action Buttons: Detail & Booking -->
                 <div class="flex gap-2">
                     <a href="#" class="flex-1 text-center border border-teal text-teal hover:bg-teal hover:text-white text-xs font-bold py-2 rounded-lg transition">Detail</a>
-                    <a href="booking_homestay.php?id=<?= $h['id'] ?? 0; ?>" class="flex-1 text-center bg-orange hover:bg-orange-d text-white text-[11px] font-bold py-2 rounded-lg transition">
+                    <a href="booking.php?id=<?= $h['id'] ?? 0; ?>" class="flex-1 text-center bg-orange hover:bg-orange-d text-white text-[11px] font-bold py-2 rounded-lg transition">
                         Booking
                     </a>
                 </div>

@@ -20,15 +20,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Password minimal 6 karakter!';
     } else {
         // Cek apakah email sudah terdaftar
-        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        if ($stmt->fetch()) {
+        $stmt = mysqli_prepare($koneksi, "SELECT id FROM users WHERE email = ?");
+        mysqli_stmt_bind_param($stmt, "s", $email);
+        mysqli_stmt_execute($stmt);
+        $hasil = mysqli_stmt_get_result($stmt);
+
+        if (mysqli_fetch_assoc($hasil)) {
             $error = 'Email sudah digunakan!';
         } else {
             // Hash password dan simpan
             $hashed = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare("INSERT INTO users (nama, email, password, role) VALUES (?, ?, ?, 'user')");
-            if ($stmt->execute([$nama, $email, $hashed])) {
+            $stmt = mysqli_prepare($koneksi, "INSERT INTO users (nama, email, password, role) VALUES (?, ?, ?, 'user')");
+            mysqli_stmt_bind_param($stmt, "sss", $nama, $email, $hashed);
+
+            if (mysqli_stmt_execute($stmt)) {
                 header('Location: login.php?register=success');
                 exit;
             } else {

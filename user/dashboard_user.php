@@ -14,7 +14,7 @@ $user = [
 
 $menu = [
     ['icon' => 'home', 'label' => 'Beranda', 'active' => true, 'link' => 'dashboard_user.php'],
-    ['icon' => 'map-pin', 'label' => 'Destinasi', 'link' => 'informasi_destinasi.php'],
+    ['icon' => 'map-pin', 'label' => 'Destinasi', 'link' => 'detail_destinasi.php'],
     ['icon' => 'ticket', 'label' => 'Tiket Saya', 'link' => 'riwayat_pesanan.php'],
     ['icon' => 'building', 'label' => 'Homestay Saya', 'link' => 'homestay_madiun.php'],
     ['icon' => 'map', 'label' => 'Peta & Rute', 'link' => 'peta_rute.php'],
@@ -46,7 +46,7 @@ $layanan = [
         'judul' => 'Booking Homestay',
         'desc'  => 'Temukan penginapan nyaman & terbaik',
         'aksi'  => 'Cari Homestay',
-        'link'  => 'homestay_madiun.php', // Arahkan ke file homestay
+        'link'  => 'detail_booking.php', // Arahkan ke file homestay
     ],
     [
         'icon' => 'book-open',
@@ -199,10 +199,18 @@ function icon($name, $size = 20, $color = 'currentColor')
 
 <div class="flex min-h-screen">
 
-    <aside class="w-60 bg-white border-r border-slate-200 flex-col p-5 shrink-0 hidden md:flex">
-        <div class="flex items-center gap-2.5 px-2 pb-6 text-lg font-bold">
-            <span class="w-8 h-8 bg-blue-700 rounded-lg flex items-center justify-center"><?= icon('map-pin', 18, '#fff') ?></span>
-            <span>Madiun<span class="text-blue-700">Track</span></span>
+    <!-- Overlay gelap saat sidebar terbuka di mobile -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden"></div>
+
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-60 bg-white border-r border-slate-200 flex flex-col p-5 shrink-0 transform -translate-x-full transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:flex">
+        <div class="flex items-center justify-between pb-6">
+            <div class="flex items-center gap-2.5 px-2 text-lg font-bold">
+                <span class="w-8 h-8 bg-blue-700 rounded-lg flex items-center justify-center"><?= icon('map-pin', 18, '#fff') ?></span>
+                <span>Madiun<span class="text-blue-700">Track</span></span>
+            </div>
+            <button id="sidebarClose" class="md:hidden text-slate-400 hover:text-slate-700 bg-transparent border-none cursor-pointer p-1">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
         </div>
 
         <nav class="flex flex-col gap-1 flex-1">
@@ -213,7 +221,7 @@ function icon($name, $size = 20, $color = 'currentColor')
                     ? "$baseStyle bg-blue-700 text-white shadow-sm" 
                     : "$baseStyle text-slate-500 hover:bg-slate-50 hover:text-slate-900";
                 ?>
-                <a href="#" class="<?= $activeStyle ?>">
+                <a href="<?= htmlspecialchars($item['link']) ?>" class="<?= $activeStyle ?>">
                     <?= icon($item['icon'], 18) ?>
                     <span><?= htmlspecialchars($item['label']) ?></span>
                 </a>
@@ -231,7 +239,10 @@ function icon($name, $size = 20, $color = 'currentColor')
     <main class="flex-1 min-w-0 flex flex-col">
 
         <header class="flex justify-between items-center px-7 py-4 border-b border-slate-200 bg-white sticky top-0 z-20">
-            <div></div>
+            <button id="hamburgerBtn" class="md:hidden text-slate-500 hover:text-slate-700 bg-transparent border-none cursor-pointer p-1">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div class="hidden md:block"></div>
             <div class="flex items-center gap-4">
                 <button class="text-slate-500 hover:text-slate-700 bg-transparent border-none cursor-pointer"><?= icon('bell', 19) ?></button>
                 <div class="flex items-center gap-2 text-sm text-slate-500 cursor-pointer">
@@ -309,8 +320,10 @@ function icon($name, $size = 20, $color = 'currentColor')
                     <?php endforeach; ?>
                 </div>
 
-                <div class="mb-2">
+                <div class="mb-2 flex items-center justify-between">
                     <h3 class="text-base font-semibold m-0">Aktivitas Terbaru</h3>
+                    <a href="detail_booking.php" 
+                    class="text-blue-700 text-[13px] font-semibold hover:underline hidden sm:block">Lihat Semua</a>
                 </div>
 
                 <div class="flex gap-5 border-b border-slate-200 mb-4 overflow-x-auto">
@@ -421,6 +434,26 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
+
+    // ===== Toggle Sidebar Mobile =====
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+    var openBtn = document.getElementById('hamburgerBtn');
+    var closeBtn = document.getElementById('sidebarClose');
+
+    function openSidebar() {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+    }
+
+    function closeSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+    }
+
+    if (openBtn) openBtn.addEventListener('click', openSidebar);
+    if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+    if (overlay) overlay.addEventListener('click', closeSidebar);
 });
 </script>
 </body>
