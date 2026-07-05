@@ -9,91 +9,170 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['nama'])) {
     exit;
 }
 
-$namaMember = $_SESSION['nama'];
+$id_user_login = $_SESSION['user_id'];
+
+// ===== Koneksi Database (untuk mengambil data profil user, sama seperti dashboard_user.php) =====
+require_once 'koneksi.php';
+
+// ===== Data user (sinkron dengan tabel `users`, dipakai untuk sidebar & header) =====
+$user = [
+    'nama'  => $_SESSION['nama'],
+    'email' => '',
+    'foto'  => 'https://i.pinimg.com/736x/86/09/13/8609138d3fad1494037c343364dadd53.jpg',
+];
+
+if (isset($koneksi)) {
+    $stmt_user = mysqli_prepare($koneksi, "SELECT id, nama, email FROM users WHERE id = ?");
+    mysqli_stmt_bind_param($stmt_user, 'i', $id_user_login);
+    mysqli_stmt_execute($stmt_user);
+    $hasil_user = mysqli_stmt_get_result($stmt_user);
+    if ($data_user = mysqli_fetch_assoc($hasil_user)) {
+        $user['nama']  = $data_user['nama'];
+        $user['email'] = $data_user['email'];
+    }
+}
+
+// ===== Menu navigasi (identik dengan dashboard_user.php, "Tiket Saya" aktif) =====
+$menu = [
+    ['icon' => 'home', 'label' => 'Beranda', 'link' => 'dashboard_user.php'],
+    ['icon' => 'map-pin', 'label' => 'Destinasi', 'link' => 'destinasi_user.php'],
+    ['icon' => 'ticket', 'label' => 'Tiket Saya', 'active' => true, 'link' => 'beli_tiket.php'],
+    ['icon' => 'building', 'label' => 'Homestay Saya', 'link' => 'booking.php'],
+    ['icon' => 'map', 'label' => 'Peta & Rute', 'link' => 'peta_rute.php'],
+    ['icon' => 'heart', 'label' => 'Favorit', 'link' => 'favorit.php'],
+    ['icon' => 'settings', 'label' => 'Pengaturan', 'link' => 'pengaturan.php'],
+];
+
+function icon($name, $size = 20, $color = 'currentColor')
+{
+    $icons = [
+        'home' => '<path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/>',
+        'map-pin' => '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+        'ticket' => '<path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1.5a1.5 1.5 0 0 0 0 3V15a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1.5a1.5 1.5 0 0 0 0-3V9Z"/><path d="M9 7v10" stroke-dasharray="3 3"/>',
+        'building' => '<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01M9 16h.01M15 16h.01"/>',
+        'map' => '<path d="M9 19 3 17V5l6 2 6-2 6 2v12l-6-2-6 2-6-2Z"/><path d="M9 5v14M15 7v14"/>',
+        'heart' => '<path d="M12 21s-7.5-4.6-10-9.3C.4 8 2 4.5 5.6 4c2.2-.3 4 .9 6.4 3.4C14.4 4.9 16.2 3.7 18.4 4 22 4.5 23.6 8 22 11.7 19.5 16.4 12 21 12 21Z"/>',
+        'user' => '<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6"/>',
+        'settings' => '<circle cx="12" cy="12" r="3"/><path d="M19.4 13a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V19a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9 2.9l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.6V4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.6 1H20a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.6 1Z"/>',
+        'logout' => '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>',
+        'search' => '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+        'bell' => '<path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 21a2 2 0 0 0 4 0"/>',
+        'tag' => '<path d="m12 2 8.5 8.5a2 2 0 0 1 0 2.8l-7 7a2 2 0 0 1-2.8 0L2 11.8V3a1 1 0 0 1 1-1h9Z"/><circle cx="7" cy="7" r="1.2"/>',
+        'book-open' => '<path d="M12 7c-2-2-5-2-9-1v13c4-1 7-1 9 1 2-2 5-2 9-1V6c-4-1-7-1-9 1Z"/><path d="M12 7v13"/>',
+        'star' => '<path d="m12 2 2.9 6.4 7 .7-5.3 4.7 1.6 6.9L12 17.3 5.8 20.7l1.6-6.9L2.1 9.1l7-.7Z"/>',
+        'chevron-down' => '<path d="m6 9 6 6 6-6"/>',
+        'chevron-right' => '<path d="m9 18 6-6-6-6"/>',
+        'arrow-right' => '<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>',
+        'help-circle' => '<circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2-3 4"/><path d="M12 17h.01"/>',
+        'package' => '<path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>',
+        'camera' => '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>'
+    ];
+    $path = $icons[$name] ?? '';
+    return "<svg width=\"{$size}\" height=\"{$size}\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"{$color}\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">{$path}</svg>";
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Madiun Track - Destinasi Wisata</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        bgc: '#f3f4f8',
-        textc: '#1e2433',
-        orange: '#f7941d',
-        orangeLight: '#fff1e0',
-        blue: '#3b6fe0',
-        blueLight: '#eef1fd',
-        navy: '#0f1f45',
-        muted: '#8b93a7',
-        borderc: '#eaecf2',
-        purpleLight: '#f3e8ff',
-        purple: '#9333ea',
+    <meta charset="UTF-8">
+    <title>MadiunTrack - Beli Tiket</title>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            bgc: '#f3f4f8',
+            textc: '#1e2433',
+            muted: '#8b93a7',
+            mutedc: '#8b93a7',
+            borderc: '#eaecf2',
+            bordc: '#e6e8f0',
+            orange: { DEFAULT: '#f7941d', light: '#fff1e0' },
+            orangeLight: '#fff1e0',
+            blue: '#3b6fe0',
+            blueLight: '#eef1fd',
+            navy: '#0f1f45',
+            purpleLight: '#f3e8ff',
+            purple: '#9333ea',
+          },
+        },
       },
-      fontFamily: {
-        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-      },
-    },
-  },
-};
-</script>
-<style>
-  /* Scrollbar tipis untuk daftar ringkasan pembayaran */
-  .summary-list::-webkit-scrollbar { width: 4px; }
-  .summary-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
-</style>
+    };
+    </script>
+    <style>
+      .summary-list::-webkit-scrollbar { width: 4px; }
+      .summary-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      input:focus, select:focus { outline: none; border-color: #f7941d; box-shadow: 0 0 0 3px rgba(247,148,29,0.12); }
+      .dashed { border-top: 1.5px dashed #e2e4ee; }
+    </style>
 </head>
-<body class="bg-bgc text-textc font-sans text-sm">
+<body class="bg-slate-50 text-slate-900 font-sans antialiased m-0">
 
-<div class="max-w-[1400px] mx-auto p-5">
+<div class="flex min-h-screen">
 
-  <div class="flex items-center justify-between flex-wrap gap-4 mb-5">
-    <div class="flex items-center gap-3">
-      <a href="index.php" class="w-9 h-9 rounded-full bg-white border border-borderc flex items-center justify-center shadow-sm hover:bg-slate-50 transition-colors" title="Kembali ke Beranda">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#1e2433" stroke-width="2" width="16" height="16"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      </a>
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-lg bg-orange text-white flex items-center justify-center shrink-0">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2C7.6 2 4 5.6 4 10c0 5.4 7 11.5 7.3 11.8.2.1.4.2.7.2s.5-.1.7-.2C13 21.5 20 15.4 20 10c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>
+     <!-- Overlay gelap saat sidebar terbuka di mobile -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden"></div>
+ 
+<aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-60 bg-white border-r border-slate-200 flex flex-col p-5 shrink-0 transform -translate-x-full transition-transform duration-300 ease-in-out md:static md:translate-x-0 md:flex">
+        <div class="flex items-center justify-between pb-6">
+            <div class="flex items-center gap-2.5 px-2 text-lg font-bold">
+                <span class="w-8 h-8 bg-blue-700 rounded-lg flex items-center justify-center"><?= icon('map-pin', 18, '#fff') ?></span>
+                <span>Madiun<span class="text-blue-700">Track</span></span>
+            </div>
+            <button id="sidebarClose" class="md:hidden text-slate-400 hover:text-slate-700 bg-transparent border-none cursor-pointer p-1">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
         </div>
-        <div>
-          <div class="font-extrabold text-base leading-tight">Madiun<span class="text-orange">Track</span></div>
-          <div class="text-[10px] text-muted font-semibold tracking-wide">TICKETING DASHBOARD</div>
-        </div>
-      </div>
-    </div>
 
-    <div class="flex items-center gap-3">
-      <div class="bg-white border border-borderc rounded-xl px-3.5 py-2 shadow-sm cursor-pointer flex items-center gap-2">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#3b6fe0" stroke-width="2" width="16" height="16"><path d="M3 8.5c0-1 .5-1.7 1.3-2.2M21 8.5c0-1-.5-1.7-1.3-2.2M6 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><circle cx="12" cy="8" r="4"/></svg>
-        <div>
-          <div class="font-bold text-xs leading-tight">Butuh bantuan?</div>
-          <div class="text-[10.5px] text-muted">Hubungi kami</div>
-        </div>
-      </div>
+        <nav class="flex flex-col gap-1 flex-1">
+            <?php foreach ($menu as $item): ?>
+                <?php
+                $baseStyle = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors";
+                $activeStyle = !empty($item['active']) 
+                    ? "$baseStyle bg-blue-700 text-white shadow-sm" 
+                    : "$baseStyle text-slate-500 hover:bg-slate-50 hover:text-slate-900";
+                ?>
+                <a href="<?= htmlspecialchars($item['link']) ?>" class="<?= $activeStyle ?>">
+                    <?= icon($item['icon'], 18) ?>
+                    <span><?= htmlspecialchars($item['label']) ?></span>
+                </a>
+            <?php endforeach; ?>
+        </nav>
 
-      <div class="relative w-10 h-10 rounded-full bg-white border border-borderc flex items-center justify-center shadow-sm cursor-pointer shrink-0">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#5b6274" stroke-width="2" width="16" height="16"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg>
-        <div class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-bold w-[18px] h-[18px] rounded-full flex items-center justify-center border-2 border-white">3</div>
-      </div>
-
-      <div class="flex items-center gap-2 cursor-pointer">
-        <img src="https://i.pravatar.cc/80?img=47" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" alt="avatar">
-        <div>
-          <div class="font-bold text-[12.5px] leading-tight"><?= htmlspecialchars($namaMember) ?></div>
-          <div class="text-[10.5px] text-muted">Member</div>
+        <div class="border-t border-slate-200 pt-3 mt-auto">
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-500 text-sm font-medium transition-colors hover:bg-red-50 hover:text-red-600">
+                <?= icon('logout', 18) ?>
+                <span>Keluar</span>
+            </a>
         </div>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8b93a7" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-      </div>
-    </div>
-  </div>
+    </aside>
+    <main class="flex-1 min-w-0 flex flex-col">
+
+        <header class="flex justify-between items-center px-7 py-4 border-b border-slate-200 bg-white sticky top-0 z-20">
+            <button id="hamburgerBtn" class="md:hidden text-slate-500 hover:text-slate-700 bg-transparent border-none cursor-pointer p-1">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div class="hidden md:block"></div>
+            <div class="flex items-center gap-4">
+                <button class="text-slate-500 hover:text-slate-700 bg-transparent border-none cursor-pointer"><?= icon('bell', 19) ?></button>
+                <div class="flex items-center gap-2 text-sm text-slate-500 cursor-pointer">
+                    <img src="<?= htmlspecialchars($user['foto']) ?>" alt="Foto profil" class="w-8 h-8 rounded-full object-cover border border-slate-200">
+                    <span>Halo, <strong class="text-slate-900"><?= htmlspecialchars($user['nama']) ?></strong></span>
+                    <?= icon('chevron-down', 16) ?>
+                </div>
+            </div>
+        </header>
+
+        <div class="p-4 md:p-7">
+
+            <h1 class="text-2xl font-semibold m-0 mb-1 text-slate-900">Beli Tiket Wisata</h1>
+            <p class="text-slate-500 text-sm m-0 mb-6">Pilih destinasi favoritmu dan nikmati pengalaman terbaik di Madiun.</p>
 
   <div class="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5">
 
@@ -204,7 +283,7 @@ tailwind.config = {
         </div>
 
         <label class="block text-[12.5px] font-semibold mb-1.5">Nama Pengunjung</label>
-        <input type="text" id="visitorName" value="<?= htmlspecialchars($namaMember) ?>" placeholder="Sesuai KTP" class="w-full border border-borderc rounded-xl px-4 py-3 text-[13px] outline-none mb-1.5 bg-white transition-colors focus:border-blue">
+        <input type="text" id="visitorName" value="<?= htmlspecialchars($user['nama']) ?>" placeholder="Sesuai KTP" class="w-full border border-borderc rounded-xl px-4 py-3 text-[13px] outline-none mb-1.5 bg-white transition-colors focus:border-blue">
         <div class="text-[10.5px] text-muted mb-4">Otomatis terisi dari akun Anda. Bisa diubah bila membeli untuk orang lain.</div>
 
         <label class="block text-[12.5px] font-semibold mb-1.5">Metode Pembayaran</label>
@@ -258,6 +337,9 @@ tailwind.config = {
       </div>
     </div>
   </div>
+
+        </div>
+    </main>
 </div>
 
 <script>
@@ -426,6 +508,26 @@ tailwind.config = {
       btn.innerHTML = originalText;
     });
   });
+
+    // ===== Toggle Sidebar Mobile =====
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+    var openBtn = document.getElementById('hamburgerBtn');
+    var closeBtn = document.getElementById('sidebarClose');
+
+    function openSidebar() {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+    }
+
+    function closeSidebar() {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+    }
+
+    if (openBtn) openBtn.addEventListener('click', openSidebar);
+    if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+    if (overlay) overlay.addEventListener('click', closeSidebar);
 </script>
 
 </body>

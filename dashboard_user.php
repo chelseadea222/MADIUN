@@ -6,21 +6,41 @@
 
 session_start();
 
-// ===== Dummy data (nantinya bisa diganti dengan query database) =====
+// Halaman ini hanya boleh diakses oleh member yang sudah login (sama seperti beli_tiket.php)
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['nama'])) {
+    header('Location: login.php');
+    exit;
+}
+
+$id_user_login = $_SESSION['user_id'];
+
+// ===== Koneksi Database (untuk mengambil data Paket Bundling & Aktivitas user) =====
+require_once 'koneksi.php';
+
+// ===== Data user (diambil dari tabel `users` di database, sesuai data hasil registrasi) =====
 $user = [
-    'nama' => 'Raka',
-    'foto' => 'https://i.pravatar.cc/100?img=12',
+    'nama'  => $_SESSION['nama'], // fallback kalau query di bawah gagal
+    'email' => '',
+    'foto'  => 'https://i.pinimg.com/736x/86/09/13/8609138d3fad1494037c343364dadd53.jpg', // Ganti jika sudah ada kolom foto profil di tabel users
 ];
 
+$stmt_user = mysqli_prepare($koneksi, "SELECT id, nama, email, role FROM users WHERE id = ?");
+mysqli_stmt_bind_param($stmt_user, 'i', $id_user_login);
+mysqli_stmt_execute($stmt_user);
+$hasil_user = mysqli_stmt_get_result($stmt_user);
+if ($data_user = mysqli_fetch_assoc($hasil_user)) {
+    $user['nama']  = $data_user['nama'];
+    $user['email'] = $data_user['email'];
+}
+
 $menu = [
-    ['icon' => 'home', 'label' => 'Beranda', 'active' => true, 'link' => '#'],
-    ['icon' => 'map-pin', 'label' => 'Destinasi', 'link' => '#'],
-    ['icon' => 'ticket', 'label' => 'Tiket Saya', 'link' => '#'],
-    ['icon' => 'building', 'label' => 'Homestay Saya', 'link' => '#'],
-    ['icon' => 'map', 'label' => 'Peta & Rute', 'link' => '#'],
-    ['icon' => 'heart', 'label' => 'Favorit', 'link' => '#'], // Ganti jika ada file favorit
-    ['icon' => 'user', 'label' => 'Profil Saya', 'link' => '#'], 
-    ['icon' => 'settings', 'label' => 'Pengaturan', 'link' => '#'],
+    ['icon' => 'home', 'label' => 'Beranda', 'active' => true, 'link' => 'dashboard_user.php'],
+    ['icon' => 'map-pin', 'label' => 'Destinasi', 'link' => 'destinasi_user.php'],
+    ['icon' => 'ticket', 'label' => 'Tiket Saya', 'link' => 'beli_tiket.php'],
+    ['icon' => 'building', 'label' => 'Homestay Saya', 'link' => 'booking.php'],
+    ['icon' => 'map', 'label' => 'Peta & Rute', 'link' => 'peta_rute.php'],
+    ['icon' => 'heart', 'label' => 'Favorit', 'link' => 'favorit.php'],
+    ['icon' => 'settings', 'label' => 'Pengaturan', 'link' => 'pengaturan.php'],
 ];
 
 $layanan = [
@@ -30,7 +50,7 @@ $layanan = [
         'judul' => 'Destinasi Wisata',
         'desc'  => 'Temukan tempat wisata terbaik di Madiun',
         'aksi'  => 'Jelajahi',
-        'link'  => '#', // Arahkan ke file destinasi
+        'link'  => 'destinasi.php',
     ],
     [
         'icon' => 'tag',
@@ -38,7 +58,7 @@ $layanan = [
         'judul' => 'Beli Tiket',
         'desc'  => 'Pesan tiket wisata dengan mudah',
         'aksi'  => 'Pesan Sekarang',
-        'link'  => '#', // Arahkan ke file beli tiket
+        'link'  => 'beli_tiket.php', // Arahkan ke file beli tiket
     ],
     [
         'icon' => 'home',
@@ -46,7 +66,7 @@ $layanan = [
         'judul' => 'Booking Homestay',
         'desc'  => 'Temukan penginapan nyaman & terbaik',
         'aksi'  => 'Cari Homestay',
-        'link'  => '#', // Arahkan ke file homestay
+        'link'  => 'booking.php', // Arahkan ke file homestay
     ],
     [
         'icon' => 'book-open',
@@ -54,100 +74,104 @@ $layanan = [
         'judul' => 'Peta & Rute',
         'desc'  => 'Lihat peta wisata dan rencanakan rute',
         'aksi'  => 'Lihat Peta',
-        'link'  => '#', // Arahkan ke file peta
+        'link'  => 'peta_rute.php', // Arahkan ke file peta
     ],
 ];
 
-// DATA PAKET BUNDLING BARU
-$paket_bundling = [
-    [
-        'icon' => 'package',
-        'warna_bg' => 'from-orange-50 to-white',
-        'warna_border' => 'border-orange-200',
-        'warna_icon' => 'text-orange-600',
-        'warna_icon_bg' => 'bg-orange-100',
-        'judul' => 'Paket Liburan Keluarga',
-        'desc'  => 'Homestay Wilis Indah + 3 Destinasi Populer (Termasuk Sarapan)',
-        'harga' => 'Rp 350.000',
-        'link'  => '#',
-    ],
-    [
-        'icon' => 'camera',
-        'warna_bg' => 'from-blue-50 to-white',
-        'warna_border' => 'border-blue-200',
-        'warna_icon' => 'text-blue-600',
-        'warna_icon_bg' => 'bg-blue-100',
-        'judul' => 'Paket Backpacker',
-        'desc'  => 'Homestay Murah + Sewa Motor 24 Jam + Tiket Pahlawan Street Center',
-        'harga' => 'Rp 210.000',
-        'link'  => '#',
-    ],
-    [
-        'icon' => 'heart',
-        'warna_bg' => 'from-rose-50 to-white',
-        'warna_border' => 'border-rose-200',
-        'warna_icon' => 'text-rose-600',
-        'warna_icon_bg' => 'bg-rose-100',
-        'judul' => 'Paket Honeymoon',
-        'desc'  => 'Hotel Aston Madiun + Romantic Dinner + Private Tour Guide',
-        'harga' => 'Rp 850.000',
-        'link'  => '#',
-    ]
+// DATA PAKET BUNDLING (diambil dari database, sesuai yang diupload Admin di tabel paket_wisata)
+$paket_bundling = [];
+
+// Palet warna untuk memperindah kartu, dirotasi otomatis sesuai urutan paket
+$warna_palet = [
+    ['bg' => 'from-orange-50 to-white', 'border' => 'border-orange-200', 'icon' => 'text-orange-600', 'icon_bg' => 'bg-orange-100', 'icon_nama' => 'package'],
+    ['bg' => 'from-blue-50 to-white',   'border' => 'border-blue-200',   'icon' => 'text-blue-600',   'icon_bg' => 'bg-blue-100',   'icon_nama' => 'camera'],
+    ['bg' => 'from-rose-50 to-white',   'border' => 'border-rose-200',   'icon' => 'text-rose-600',   'icon_bg' => 'bg-rose-100',   'icon_nama' => 'heart'],
 ];
 
-$aktivitas = [
-    [
-        'gambar' => 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=200',
-        'judul'  => 'Tiket Masuk Pahlawan Street Center',
-        'tipe'   => 'Tiket',
-        'label1' => 'Tanggal Kunjungan',
-        'nilai1' => '20 Mei 2024',
-        'label2' => 'Jumlah',
-        'nilai2' => '2 Tiket',
-        'status' => 'Selesai',
-    ],
-    [
-        'gambar' => 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=200',
-        'judul'  => 'Homestay Omah Kartini',
-        'tipe'   => 'Homestay',
-        'label1' => 'Check-in',
-        'nilai1' => '18 Mei 2024',
-        'label2' => 'Check-out',
-        'nilai2' => '20 Mei 2024',
-        'status' => 'Selesai',
-    ],
-    [
-        'gambar' => 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=200',
-        'judul'  => 'Tiket Masuk Taman Sumber Umis',
-        'tipe'   => 'Tiket',
-        'label1' => 'Tanggal Kunjungan',
-        'nilai1' => '15 Mei 2024',
-        'label2' => 'Jumlah',
-        'nilai2' => '1 Tiket',
-        'status' => 'Selesai',
-    ],
-];
+if (isset($koneksi)) {
+    $query_paket = mysqli_query($koneksi, "SELECT * FROM paket_wisata ORDER BY id_paket DESC LIMIT 6");
+    if ($query_paket && mysqli_num_rows($query_paket) > 0) {
+        $i = 0;
+        while ($row = mysqli_fetch_array($query_paket)) {
+            $warna = $warna_palet[$i % count($warna_palet)];
+            $paket_bundling[] = [
+                'icon'          => $warna['icon_nama'],
+                'warna_bg'      => $warna['bg'],
+                'warna_border'  => $warna['border'],
+                'warna_icon'    => $warna['icon'],
+                'warna_icon_bg' => $warna['icon_bg'],
+                'judul'         => $row['nama_paket'],
+                'desc'          => $row['deskripsi'],
+                'harga'         => 'Rp ' . number_format($row['harga_bundling'], 0, ',', '.'),
+                // Diarahkan ke booking_paket.php yang sudah menerima parameter id_paket
+                'link'          => 'booking_paket.php?id_paket=' . $row['id_paket'],
+            ];
+            $i++;
+        }
+    }
+}
 
-$rekomendasi = [
-    'gambar' => 'https://images.unsplash.com/photo-1500534623283-312aade485b7?w=400',
-    'rating' => 4.7,
-    'judul'  => 'Alun-Alun Kota Madiun',
-    'lokasi' => 'Manguharjo',
-    'harga'  => 'Gratis',
-];
+// ===== AKTIVITAS TERBARU (Tiket + Booking Homestay milik user yang login) =====
+$aktivitas = [];
 
-$favorit = [
-    [
-        'gambar' => 'https://images.unsplash.com/photo-1431274172761-fca41d930114?w=100',
-        'judul'  => 'Pahlawan Street Center',
-        'lokasi' => 'Kartoharjo',
-    ],
-    [
-        'gambar' => 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=100',
-        'judul'  => 'Taman Bantaran Kali',
-        'lokasi' => 'Manguharjo',
-    ],
-];
+if (isset($koneksi)) {
+
+    // --- 1. Riwayat pembelian tiket (tabel: pemesanan_tiket) ---
+    // CATATAN: tabel pemesanan_tiket saat ini belum punya kolom id_user.
+    // Tambahkan dulu kolomnya, lalu simpan id_user saat insert di proses_beli_tiket.php:
+    //   ALTER TABLE pemesanan_tiket ADD COLUMN id_user INT NULL AFTER id_transaksi;
+    $cek_kolom = mysqli_query($koneksi, "SHOW COLUMNS FROM pemesanan_tiket LIKE 'id_user'");
+    if ($cek_kolom && mysqli_num_rows($cek_kolom) > 0) {
+        $stmt = mysqli_prepare($koneksi, "SELECT id_transaksi, destinasi, total_bayar, status, tanggal_pesan 
+                                        FROM pemesanan_tiket WHERE id_user = ? ORDER BY tanggal_pesan DESC LIMIT 10");
+        mysqli_stmt_bind_param($stmt, 'i', $id_user_login);
+        mysqli_stmt_execute($stmt);
+        $hasil_tiket = mysqli_stmt_get_result($stmt);
+        while ($t = mysqli_fetch_assoc($hasil_tiket)) {
+            $aktivitas[] = [
+                'gambar'   => 'https://images.unsplash.com/photo-1518998053901-5348d3961a04?w=200',
+                'judul'    => 'Tiket Masuk ' . $t['destinasi'],
+                'tipe'     => 'Tiket',
+                'label1'   => 'Tanggal Pesan',
+                'nilai1'   => date('d M Y', strtotime($t['tanggal_pesan'])),
+                'label2'   => 'Total Bayar',
+                'nilai2'   => 'Rp ' . number_format($t['total_bayar'], 0, ',', '.'),
+                'status'   => $t['status'],
+                'waktu'    => strtotime($t['tanggal_pesan']),
+            ];
+        }
+    }
+
+    // --- 2. Riwayat booking homestay (tabel: booking) ---
+    // CATATAN: tabel booking saat ini juga belum punya kolom id_user (hanya email).
+    // Dicocokkan lewat email akun yang login (diambil dari tabel users, bukan session).
+    if (!empty($user['email'])) {
+        $email_login = $user['email'];
+        $stmt2 = mysqli_prepare($koneksi, "SELECT homestay_nama, tanggal_checkin, durasi_malam, total_bayar, status, created_at 
+                                            FROM booking WHERE email = ? ORDER BY created_at DESC LIMIT 10");
+        mysqli_stmt_bind_param($stmt2, 's', $email_login);
+        mysqli_stmt_execute($stmt2);
+        $hasil_booking = mysqli_stmt_get_result($stmt2);
+        while ($b = mysqli_fetch_assoc($hasil_booking)) {
+            $aktivitas[] = [
+                'gambar'   => 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=200',
+                'judul'    => 'Homestay ' . $b['homestay_nama'],
+                'tipe'     => 'Homestay',
+                'label1'   => 'Check-in',
+                'nilai1'   => date('d M Y', strtotime($b['tanggal_checkin'])),
+                'label2'   => 'Durasi',
+                'nilai2'   => $b['durasi_malam'] . ' Malam',
+                'status'   => $b['status'],
+                'waktu'    => strtotime($b['created_at']),
+            ];
+        }
+    }
+
+    // Urutkan gabungan aktivitas (tiket + homestay) dari yang terbaru
+    usort($aktivitas, function ($a, $b) {
+        return $b['waktu'] <=> $a['waktu'];
+    });
+}
 
 function icon($name, $size = 20, $color = 'currentColor')
 {
@@ -253,7 +277,7 @@ function icon($name, $size = 20, $color = 'currentColor')
             </div>
         </header>
 
-        <div class="p-4 md:p-7 grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-6 items-start">
+        <div class="p-4 md:p-7">
 
             <div class="flex flex-col min-w-0">
 
@@ -303,6 +327,9 @@ function icon($name, $size = 20, $color = 'currentColor')
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-9">
+                    <?php if (empty($paket_bundling)): ?>
+                        <p class="text-slate-400 text-sm col-span-full">Belum ada paket bundling yang tersedia dari Admin.</p>
+                    <?php endif; ?>
                     <?php foreach ($paket_bundling as $pb): ?>
                         <div class="bg-gradient-to-br <?= $pb['warna_bg'] ?> border <?= $pb['warna_border'] ?> p-5 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col">
                             <div class="<?= $pb['warna_icon_bg'] ?> w-11 h-11 rounded-xl flex items-center justify-center mb-4 shrink-0">
@@ -333,7 +360,20 @@ function icon($name, $size = 20, $color = 'currentColor')
                 </div>
 
                 <div class="flex flex-col gap-3 mb-8">
-                    <?php foreach ($aktivitas as $a): ?>
+                    <?php if (empty($aktivitas)): ?>
+                        <p class="text-slate-400 text-sm text-center py-6">Belum ada aktivitas pembelian tiket atau booking homestay.</p>
+                    <?php endif; ?>
+                    <?php foreach ($aktivitas as $a):
+                        // Tentukan warna pill berdasarkan kata kunci status dari database
+                        $status_lower = strtolower($a['status']);
+                        if (strpos($status_lower, 'selesai') !== false || strpos($status_lower, 'lunas') !== false || strpos($status_lower, 'bayar_ditempat') !== false) {
+                            $pill_class = 'bg-green-100 text-green-700';
+                        } elseif (strpos($status_lower, 'batal') !== false || strpos($status_lower, 'gagal') !== false) {
+                            $pill_class = 'bg-red-100 text-red-700';
+                        } else {
+                            $pill_class = 'bg-amber-100 text-amber-700';
+                        }
+                    ?>
                         <div class="activity-card flex items-center gap-3.5 bg-white border border-slate-200 rounded-2xl p-3 px-4 shadow-sm" data-type="<?= strtolower($a['tipe']) ?>">
                             <img src="<?= htmlspecialchars($a['gambar']) ?>" alt="<?= htmlspecialchars($a['judul']) ?>" class="w-14 h-14 rounded-xl object-cover shrink-0">
                             <div class="flex-1 min-w-0">
@@ -350,7 +390,7 @@ function icon($name, $size = 20, $color = 'currentColor')
                                 </div>
                             </div>
                             <div class="flex flex-col items-end gap-2 shrink-0">
-                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-green-100 text-green-700"><?= htmlspecialchars($a['status']) ?></span>
+                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full <?= $pill_class ?>"><?= htmlspecialchars($a['status']) ?></span>
                                 <button class="border border-slate-200 bg-white text-slate-700 text-[12px] font-semibold px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors hidden sm:block">Lihat Detail</button>
                             </div>
                         </div>
@@ -367,46 +407,6 @@ function icon($name, $size = 20, $color = 'currentColor')
                     </div>
                     <button class="bg-blue-700 text-white border-none text-[13px] font-semibold px-4.5 py-2.5 rounded-xl hover:bg-blue-800 transition-colors whitespace-nowrap w-full sm:w-auto shadow-sm">Hubungi CS</button>
                 </div>
-
-            </div>
-
-            <div class="flex flex-col">
-
-                <section class="bg-white border border-slate-200 rounded-2xl p-5 mb-5 shadow-sm">
-                    <h3 class="m-0 mb-4 text-[15px] font-semibold text-slate-900">Rekomendasi Untukmu</h3>
-                    <div>
-                        <div class="relative mb-3">
-                            <img src="<?= htmlspecialchars($rekomendasi['gambar']) ?>" alt="<?= htmlspecialchars($rekomendasi['judul']) ?>" class="w-full h-[140px] object-cover rounded-xl block">
-                            <span class="absolute top-2 right-2 bg-amber-500 text-white text-[11px] font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-sm">
-                                <?= icon('star', 12, '#fff') ?> <?= $rekomendasi['rating'] ?>
-                            </span>
-                        </div>
-                        <strong class="text-sm font-semibold block text-slate-900"><?= htmlspecialchars($rekomendasi['judul']) ?></strong>
-                        <p class="flex items-center gap-1 text-xs text-slate-500 my-1.5">
-                            <?= icon('map-pin', 12, '#94a3b8') ?> <?= htmlspecialchars($rekomendasi['lokasi']) ?>
-                        </p>
-                        <p class="text-green-600 font-bold text-[14px] m-0 mb-4"><?= htmlspecialchars($rekomendasi['harga']) ?></p>
-                        <button class="w-full border border-slate-200 bg-white text-slate-700 text-[12.5px] font-semibold px-3.5 py-2 rounded-xl hover:bg-slate-50 transition-colors">Lihat Detail</button>
-                    </div>
-                </section>
-
-                <section class="bg-white border border-slate-200 rounded-2xl p-5 mb-5 shadow-sm">
-                    <h3 class="m-0 mb-4 text-[15px] font-semibold text-slate-900">Favorit Anda</h3>
-                    <div class="flex flex-col gap-3.5 mb-5">
-                        <?php foreach ($favorit as $f): ?>
-                            <div class="flex items-center gap-3">
-                                <img src="<?= htmlspecialchars($f['gambar']) ?>" alt="<?= htmlspecialchars($f['judul']) ?>" class="w-12 h-12 rounded-xl object-cover shrink-0">
-                                <div>
-                                    <strong class="text-[13px] block font-semibold text-slate-900 leading-tight mb-1"><?= htmlspecialchars($f['judul']) ?></strong>
-                                    <p class="m-0 text-[11.5px] text-slate-500 flex items-center gap-1">
-                                        <?= icon('map-pin', 11, '#94a3b8') ?> <?= htmlspecialchars($f['lokasi']) ?>
-                                    </p>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                    <button class="w-full border border-slate-200 bg-white text-slate-700 text-[12.5px] font-semibold px-3.5 py-2 rounded-xl hover:bg-slate-50 transition-colors">Lihat Semua Favorit</button>
-                </section>
 
             </div>
 

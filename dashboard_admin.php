@@ -14,18 +14,14 @@ $admin = [
 
 $menu = [
     ['icon' => 'home',     'label' => 'Dashboard',             'active' => true, 'link' => 'dashboard_admin.php'],
-    ['icon' => 'ticket',   'label' => 'Tiket Wisata',           'link' => '#'],
-    ['icon' => 'building', 'label' => 'Reservasi Penginapan',   'link' => '#'],
+    ['icon' => 'ticket',   'label' => 'Tiket Wisata',           'link' => 'tiket_admin.php'],
     ['icon' => 'map-pin',  'label' => 'Destinasi Wisata',       'link' => '#'],
-    ['icon' => 'home',     'label' => 'Homestay',               'link' => '#'],
-    ['icon' => 'user',     'label' => 'Pengguna',               'link' => '#'],
-    ['icon' => 'star',     'label' => 'Ulasan',                 'link' => '#'],
-    ['icon' => 'book-open','label' => 'Laporan',                'link' => '#'],
+    ['icon' => 'home',     'label' => 'Homestay',               'link' => 'homestay_admin.php'],
+    ['icon' => 'user',     'label' => 'Pengguna',               'link' => 'pengguna_admin.php'],
 ];
 
 $menu_bawah = [
-    ['icon' => 'settings', 'label' => 'Pengaturan', 'link' => '#'],
-    ['icon' => 'user',     'label' => 'Akun Admin', 'link' => '#'],
+    ['icon' => 'settings', 'label' => 'Pengaturan', 'link' => 'pengaturan_admin.php'],
 ];
 
 $stat_cards = [
@@ -61,6 +57,57 @@ $ringkasan = [
     ['icon' => 'user',     'warna_bg' => 'bg-purple-100', 'warna_icon' => 'text-purple-600', 'label' => 'Pengunjung Baru',      'nilai' => '52'],
 ];
 
+// ===== Data statistik pengunjung dari API BPS (diambil dari api_dashboard_admin.php) =====
+$bps_labels = [];
+$bps_values = [];
+$bps_status = 'fallback'; // Default status jika API gagal
+$bps_api_key = 'c4752a971021db39a254799794cedd5b';
+
+// URL API Statictable BPS Kota Madiun (kode domain 3577)
+$bps_url = "https://webapi.bps.go.id/v1/api/view/domain/3577/model/statictable/lang/ind/id/1540/key/{$bps_api_key}";
+
+// Timeout 5 detik agar dashboard tidak hang jika API BPS lambat/down
+$bps_options = [
+    "http" => [
+        "method"  => "GET",
+        "header"  => "User-Agent: PHP\r\n",
+        "timeout" => 5,
+    ]
+];
+$bps_context = stream_context_create($bps_options);
+
+// Ambil data mentah dari API BPS
+$bps_raw = @file_get_contents($bps_url, false, $bps_context);
+
+if ($bps_raw) {
+    $bps_json = json_decode($bps_raw, true);
+
+    // Validasi struktur JSON dari BPS
+    if (isset($bps_json['data'][1]) && !empty($bps_json['data'][1])) {
+        foreach ($bps_json['data'][1] as $row) {
+            if (isset($row['label'])) {
+                $bps_labels[] = $row['label'];
+
+                // Ambil nilai variabel, bersihkan dari karakter non-angka
+                $vals = array_values($row['var'] ?? [0]);
+                $clean_val = preg_replace('/[^0-9]/', '', $vals[0] ?? 0);
+                $bps_values[] = (int) $clean_val;
+            }
+        }
+
+        if (!empty($bps_values)) {
+            $bps_status = 'live';
+        }
+    }
+}
+
+// Jika API gagal / kosong, gunakan data cadangan (fallback)
+if (empty($bps_values)) {
+    $bps_labels = ['2018', '2019', '2020', '2021', '2022', '2023', '2024'];
+    $bps_values = [389000, 421000, 89000, 47000, 201000, 278000, 315000];
+    $bps_status = 'fallback';
+}
+
 function icon($name, $size = 20, $color = 'currentColor')
 {
     $icons = [
@@ -82,6 +129,8 @@ function icon($name, $size = 20, $color = 'currentColor')
         'download'   => '<path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/>',
         'file-text'  => '<path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/><path d="M9 13h6M9 17h6"/>',
         'clock'      => '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+        'menu'       => '<path d="M4 6h16M4 12h16M4 18h16"/>',
+        'x'          => '<path d="M18 6 6 18M6 6l12 12"/>',
     ];
     $path = $icons[$name] ?? '';
     return "<svg width=\"{$size}\" height=\"{$size}\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"{$color}\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">{$path}</svg>";
@@ -106,10 +155,18 @@ function icon($name, $size = 20, $color = 'currentColor')
 
 <div class="flex min-h-screen">
 
-    <aside class="w-60 bg-white border-r border-slate-200 flex-col p-5 shrink-0 hidden md:flex">
-        <div class="flex items-center gap-2.5 px-2 pb-6 text-lg font-bold">
-            <span class="w-8 h-8 bg-blue-700 rounded-lg flex items-center justify-center"><?= icon('map-pin', 18, '#fff') ?></span>
-            <span>Madiun<span class="text-blue-700">Track</span></span>
+    <!-- Overlay gelap, tampil saat sidebar terbuka di mobile -->
+    <div id="sidebarOverlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/40 z-30 hidden md:hidden"></div>
+
+    <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex-col p-5 shrink-0 flex fixed md:static inset-y-0 left-0 z-40 -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto">
+        <div class="flex items-center justify-between px-2 pb-6">
+            <div class="flex items-center gap-2.5 text-lg font-bold">
+                <span class="w-8 h-8 bg-blue-700 rounded-lg flex items-center justify-center"><?= icon('map-pin', 18, '#fff') ?></span>
+                <span>Madiun<span class="text-blue-700">Track</span></span>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-slate-700 bg-transparent border-none cursor-pointer">
+                <?= icon('x', 20) ?>
+            </button>
         </div>
 
         <div class="text-[11px] font-bold text-slate-400 tracking-wider px-3 mb-2">MANAJEMEN</div>
@@ -155,8 +212,10 @@ function icon($name, $size = 20, $color = 'currentColor')
 
     <main class="flex-1 min-w-0 flex flex-col">
 
-        <header class="flex justify-between items-center px-7 py-4 border-b border-slate-200 bg-white sticky top-0 z-20">
-            <div></div>
+        <header class="flex justify-between items-center px-4 md:px-7 py-4 border-b border-slate-200 bg-white sticky top-0 z-20">
+            <button onclick="toggleSidebar()" class="md:hidden text-slate-500 hover:text-slate-700 bg-transparent border-none cursor-pointer p-1">
+                <?= icon('menu', 24) ?>
+            </button>
             <div class="flex items-center gap-4">
                 <span class="bg-blue-50 text-blue-700 font-bold text-[11px] px-3.5 py-2 rounded-full">MODE ADMIN</span>
                 <button class="relative text-slate-500 hover:text-slate-700 bg-transparent border-none cursor-pointer">
@@ -212,9 +271,9 @@ function icon($name, $size = 20, $color = 'currentColor')
 
                 <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
                     <div class="flex items-center justify-between mb-3.5">
-                        <h3 class="text-[15px] font-semibold m-0">Pengunjung per Bulan</h3>
-                        <span class="text-xs font-semibold text-slate-500 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg flex items-center gap-2 cursor-pointer">
-                            6 Bulan Terakhir <?= icon('chevron-down', 12) ?>
+                        <h3 class="text-[15px] font-semibold m-0">Statistik Pengunjung (BPS)</h3>
+                        <span class="text-[11px] font-semibold px-3 py-1.5 rounded-lg <?= $bps_status === 'live' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-amber-50 text-amber-700 border border-amber-200' ?>">
+                            <?= $bps_status === 'live' ? '● Data Live BPS' : '● Data Cadangan' ?>
                         </span>
                     </div>
                     <div class="h-[230px] relative"><canvas id="barChart"></canvas></div>
@@ -311,6 +370,12 @@ function icon($name, $size = 20, $color = 'currentColor')
 </div>
 
 <script>
+  // Toggle sidebar mobile (buka/tutup drawer menu + overlay)
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('-translate-x-full');
+    document.getElementById('sidebarOverlay').classList.toggle('hidden');
+  }
+
   // Line chart - Tren Transaksi Bulanan
   new Chart(document.getElementById('lineChart'), {
     type: 'line',
@@ -345,13 +410,13 @@ function icon($name, $size = 20, $color = 'currentColor')
     }
   });
 
-  // Bar chart - Pengunjung per Bulan
+  // Bar chart - Statistik Pengunjung (data dari API BPS via api_dashboard_admin.php)
   new Chart(document.getElementById('barChart'), {
     type: 'bar',
     data: {
-      labels: ['Jan','Feb','Mar','Apr','Mei','Jun'],
+      labels: <?= json_encode($bps_labels) ?>,
       datasets: [{
-        data: [0,42,63,49,36,84],
+        data: <?= json_encode($bps_values) ?>,
         backgroundColor: '#ea580c',
         borderRadius: 6,
         maxBarThickness: 34,
@@ -362,7 +427,7 @@ function icon($name, $size = 20, $color = 'currentColor')
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { min: 0, max: 90, ticks: { stepSize: 15, color: '#94a3b8', font: { size: 11 } }, grid: { color: '#f1f5f9' } },
+        y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { color: '#f1f5f9' } },
         x: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
       }
     }

@@ -1,4 +1,5 @@
-<?php require_once 'koneksi.php'; $id = $_GET['id']; ?>
+<?php
+require_once 'koneksi.php';
 
 if (!isset($_GET['id_paket'])) {
     echo "<script>alert('Pilih paket yang ingin dibooking!'); window.location='paket.php';</script>";
@@ -8,6 +9,11 @@ if (!isset($_GET['id_paket'])) {
 $id_paket = $_GET['id_paket'];
 $query = mysqli_query($koneksi, "SELECT * FROM paket_wisata WHERE id_paket = '$id_paket'");
 $paket = mysqli_fetch_array($query);
+
+if (!$paket) {
+    echo "<script>alert('Paket tidak ditemukan!'); window.location='paket.php';</script>";
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
