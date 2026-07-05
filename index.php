@@ -10,17 +10,17 @@ session_start();
 require_once 'koneksi.php';
 // 2. DATA DESTINASI WISATA (Statis)
 $wisata_madiun = [
-    ["nama" => "Pahlawan Street Center (PSC)", "lokasi" => "Kartoharjo", "img" => "https://assets-a1.kompasiana.com/items/album/2024/12/12/img-0113-675a6be334777c25d2352533.jpeg", "desc" => "Malioboro-nya Kota Madiun yang dihiasi replika ikon dunia ikonik seperti Patung Merlion dan Menara Eiffel."],
-    ["nama" => "Taman Sumber Umis", "lokasi" => "Manguharjo", "img" => "https://lh3.googleusercontent.com/gps-cs-s/APNQkAH8uUwWANvaY_KcCc_DOCFanpBPe5Sn2-35TARv1y8vM2jR3gkRkGiqO3fMKHXbccYp-6BUTWPF5vIggnb5Ami70_Cp3RGjqIXl3AGoR0kRWbG6oKpkYc4NGZXu3vlgmQLXR_4U=s680-w680-h510-rw", "desc" => "Taman kota indah di pusat Madiun yang memiliki replika Ka'bah dengan suasana malam yang megah."],
-    ["nama" => "Alun-Alun Kota Madiun", "lokasi" => "Manguharjo", "img" => "https://i.pinimg.com/736x/38/0e/4e/380e4ee1282c408ecc7ea699bbfed5f7.jpg", "desc" => "Pusat aktivitas warga dengan ruang terbuka hijau luas, Masjid Agung, dan dikelilingi jajaran kuliner lokal."],
-    ["nama" => "Taman Bantaran Kali Madiun", "lokasi" => "Manguharjo", "img" => "https://i.pinimg.com/736x/48/d3/1c/48d31cfe40c5fbbf57aae4657076c328.jpg", "desc" => "Spot santai di pinggir sungai dengan fasilitas olahraga, gazebo, jembatan gantung, dan pemandangan asri."],
-    ["nama" => "Monumen Kresek", "lokasi" => "Wungu", "img" => "https://i.pinimg.com/736x/e1/7f/3d/e17f3d23eb9e1ebaf93a0a110e042856.jpg", "desc" => "Monumen bersejarah yang penuh dengan nilai edukasi perjuangan bangsa, dikelilingi taman rindang yang tenang."],
-    ["nama" => "Madiun Umbul Square", "lokasi" => "Dolopo", "img" => "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=800", "desc" => "Taman hiburan keluarga terpadu yang menyediakan wahana permainan air, kincir ria, dan mini zoo satwa."],
-    ["nama" => "Taman Trembesi", "lokasi" => "Kartoharjo", "img" => "https://static.promediateknologi.id/crop/0x0:0x0/1200x0/webp/photo/p1/867/2024/01/27/Picsart_24-01-27_20-24-31-261-729900772.jpg", "desc" => "Kawasan hutan kota mini dengan jajaran pohon trembesi raksasa yang sejuk, rindang, dan alami."],
-    ["nama" => "Waduk Bening Widas", "lokasi" => "Saradan", "img" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQPN1tWAOQZVv-zr1HOZUONGea7I93Af8RVg&s", "desc" => "Wisata air waduk yang menawarkan panorama alam pegunungan, spot memancing, dan bumi perkemahan."],
-    ["nama" => "Desa Wisata Brumbun", "lokasi" => "Wungu", "img" => "https://images.unsplash.com/photo-1530866495561-507c9faab2ed?q=80&w=800", "desc" => "Destinasi wisata alam pedesaan lereng Wilis yang menawarkan aktivitas river tubing menantang."],
-    ["nama" => "Ngrowo Bening Edupark", "lokasi" => "Taman", "img" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV1kaTQ4BcEAhSbmwe6UaDPV17HGbXQ5MUKw&s", "desc" => "Taman edukasi agrowisata perkotaan, tempat belajar menanam sayur hidroponik, peternakan, dan bersantai."],
-    ["nama" => "Hutan Pinus NONGKO IJO", "lokasi" => "Kare", "img" => "https://indonesiatraveler.id/wp-content/uploads/2020/10/Madiun-Nongko-Ijo3-e1602582835404.jpg", "desc" => "Pesona air terjun tersembunyi di lereng Gunung Wilis yang menyuguhkan udara sejuk dan air super jernih."]
+    ["nama" => "Pahlawan Street Center (PSC)", "lokasi" => "Kartoharjo", "img" => "https://assets-a1.kompasiana.com/items/album/2024/12/12/img-0113-675a6be334777c25d2352533.jpeg", "desc" => "Malioboro-nya Kota Madiun yang dihiasi replika ikon dunia ikonik.", "harga" => "Rp 10.000"],
+    ["nama" => "Taman Sumber Umis", "lokasi" => "Manguharjo", "img" => "https://lh3.googleusercontent.com/gps-cs-s/APNQkAH8uUwWANvaY_KcCc_DOCFanpBPe5Sn2-35TARv1y8vM2jR3gkRkGiqO3fMKHXbccYp-6BUTWPF5vIggnb5Ami70_Cp3RGjqIXl3AGoR0kRWbG6oKpkYc4NGZXu3vlgmQLXR_4U=s680-w680-h510-rw", "desc" => "Taman kota indah di pusat Madiun yang memiliki replika Ka'bah.", "harga" => "Gratis"],
+    ["nama" => "Alun-Alun Kota Madiun", "lokasi" => "Manguharjo", "img" => "https://i.pinimg.com/736x/38/0e/4e/380e4ee1282c408ecc7ea699bbfed5f7.jpg", "desc" => "Pusat aktivitas warga dengan ruang terbuka hijau luas.", "harga" => "Rp 15.000"],
+    ["nama" => "Taman Bantaran Kali Madiun", "lokasi" => "Manguharjo", "img" => "https://i.pinimg.com/736x/48/d3/1c/48d31cfe40c5fbbf57aae4657076c328.jpg", "desc" => "Spot santai di pinggir sungai dengan fasilitas olahraga.", "harga" => "Rp 5.000"],
+    ["nama" => "Monumen Kresek", "lokasi" => "Wungu", "img" => "https://i.pinimg.com/736x/e1/7f/3d/e17f3d23eb9e1ebaf93a0a110e042856.jpg", "desc" => "Monumen bersejarah yang penuh dengan nilai edukasi perjuangan bangsa.", "harga" => "Rp 5.000"],
+    ["nama" => "Madiun Umbul Square", "lokasi" => "Dolopo", "img" => "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=800", "desc" => "Taman hiburan keluarga terpadu yang menyediakan wahana permainan air.", "harga" => "Rp 20.000"],
+    ["nama" => "Taman Trembesi", "lokasi" => "Kartoharjo", "img" => "https://static.promediateknologi.id/crop/0x0:0x0/1200x0/webp/photo/p1/867/2024/01/27/Picsart_24-01-27_20-24-31-261-729900772.jpg", "desc" => "Kawasan hutan kota mini dengan jajaran pohon trembesi raksasa.", "harga" => "Rp 10.000"],
+    ["nama" => "Waduk Bening Widas", "lokasi" => "Saradan", "img" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQPN1tWAOQZVv-zr1HOZUONGea7I93Af8RVg&s", "desc" => "Wisata air waduk yang menawarkan panorama alam pegunungan.", "harga" => "Rp 15.000"],
+    ["nama" => "Desa Wisata Brumbun", "lokasi" => "Wungu", "img" => "https://images.unsplash.com/photo-1530866495561-507c9faab2ed?q=80&w=800", "desc" => "Destinasi wisata alam pedesaan lereng Wilis.", "harga" => "Rp 25.000"],
+    ["nama" => "Ngrowo Bening Edupark", "lokasi" => "Taman", "img" => "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV1kaTQ4BcEAhSbmwe6UaDPV17HGbXQ5MUKw&s", "desc" => "Taman edukasi agrowisata perkotaan, tempat belajar menanam sayur.", "harga" => "Rp 10.000"],
+    ["nama" => "Hutan Pinus NONGKO IJO", "lokasi" => "Kare", "img" => "https://indonesiatraveler.id/wp-content/uploads/2020/10/Madiun-Nongko-Ijo3-e1602582835404.jpg", "desc" => "Pesona air terjun tersembunyi di lereng Gunung Wilis.", "harga" => "Rp 10.000"]
 ];
 
 // 4. DATA HOMESTAY
@@ -93,7 +93,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
  
 <header class="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
   <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-    <a href="#" class="flex items-center gap-2 flex-shrink-0">
+    <a href="index.php" class="flex items-center gap-2 flex-shrink-0">
       <i class="fa-solid fa-location-dot text-orange text-xl"></i>
       <div class="leading-none">
         <div><span class="font-extrabold text-[18px] text-gray-900">Madiun</span><span class="font-extrabold text-[18px] text-orange">Track</span></div>
@@ -170,7 +170,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
     <!-- Grid diubah menjadi 5 kolom agar semuanya lurus dalam satu baris -->
     <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6">
     <!-- 1. Destinasi Wisata -->
-      <a href="detail_destinasi.php" class="flex items-start gap-4 group cursor-pointer">
+      <a href="#destinasi" class="flex items-start gap-4 group cursor-pointer">
         <div class="icon-blue w-[54px] h-[54px] rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
           <i class="fa-solid fa-map-marked-alt text-white text-xl"></i>
         </div>
@@ -182,7 +182,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
       </a>
 
       <!-- 2. Beli Tiket Wisata (BARU DITAMBAHKAN) -->
-      <a href="#" class="flex items-start gap-4 group cursor-pointer">
+      <a href="login.php" class="flex items-start gap-4 group cursor-pointer">
         <div class="icon-orange w-[54px] h-[54px] rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
           <i class="fa-solid fa-ticket text-white text-xl"></i>
         </div>
@@ -206,7 +206,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
       </a>
  
       <!-- 4. Homestay -->
-      <a href="#" class="flex items-start gap-4 group cursor-pointer">
+      <a href="#homestay" class="flex items-start gap-4 group cursor-pointer">
         <div class="icon-purple w-[54px] h-[54px] rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
           <i class="fa-solid fa-house text-white text-xl"></i>
         </div>
@@ -218,7 +218,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
       </a>
  
       <!-- 5. Peta Wisata -->
-      <a href="#" class="flex items-start gap-4 group cursor-pointer">
+      <a href="#peta" class="flex items-start gap-4 group cursor-pointer">
         <div class="icon-green w-[54px] h-[54px] rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
           <i class="fa-solid fa-map text-white text-xl"></i>
         </div>

@@ -51,7 +51,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;}
 
 <header class="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
   <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-    <a href="landing_user.php" class="flex items-center gap-2">
+    <a href="index.php" class="flex items-center gap-2">
       <i class="fa-solid fa-arrow-left text-gray-400 text-sm"></i>
       <span class="font-extrabold text-[18px] text-gray-900">Madiun<span class="text-orange">Track</span></span>
     </a>
