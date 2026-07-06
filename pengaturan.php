@@ -221,7 +221,7 @@ function icon($name, $size = 20, $color = 'currentColor')
                         </div>
                     </div>
 
-                    <a href="profil.php" class="mt-5 w-full inline-flex items-center justify-center gap-2 border border-blue-200 text-blue-700 hover:bg-blue-50 text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors">
+                    <a href="edit_profil.php" class="mt-5 w-full inline-flex items-center justify-center gap-2 border border-blue-200 text-blue-700 hover:bg-blue-50 text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors">
                         <?= icon('edit', 15) ?> Edit Profil
                     </a>
                 </div>
